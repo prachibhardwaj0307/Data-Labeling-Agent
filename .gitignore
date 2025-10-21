@@ -4,3 +4,4 @@ input_data.json
 agent/__pycache__/
 model/__pycache__/
 utils/__pycache__/
+test_label_studio.py
