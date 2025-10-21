@@ -1,0 +1,148 @@
+{
+  "query": "holiday",
+  "location": "India",
+  "statistics": {
+    "total_documents": 32,
+    "existing_labeled": 15,
+    "newly_processed": 17,
+    "filtered_out": 15,
+    "successfully_labeled": 17,
+    "group_review_attempts": 3,
+    "label_review_attempts": 3,
+    "label_distribution": {
+      "relevant": 4,
+      "somewhat_relevant": 10,
+      "acceptable": 1,
+      "not_sure": 2
+    }
+  },
+  "labeling_details": {
+    "relevant": [
+      {
+        "doc_id": "backyard_result1_5754b18e-1b51-4e25-85b3-1f9135ef79ce",
+        "title": "2025 Global Holiday & Recharge Days",
+        "reason": "This document is directly relevant to the query as it discusses holidays in the context of an employee handbook for the year 2025. Although it doesn't specifically mention India, it does cover global holidays which could include India. The title and content are clear and meaningful.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result6_dbbf97e2-2ac0-4239-a44e-fbd20bee26d1",
+        "title": "Simpplr 2024 Global Holidays",
+        "reason": "The document directly answers the user's query about holidays. It provides a comprehensive list of global holidays for the year 2024, including specific holidays for India which matches the user's location. The document is current and up-to-date.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result11_3558a3b9-024b-49c3-b7a0-b27a50e8ef2a",
+        "title": "India | Holi Celebration 2025!",
+        "reason": "The document directly answers the query as it is about a festival celebration (Holi) in India, which matches the user's location and group theme. The information is current and comprehensive, providing details about the date, time, and activities of the celebration. The document is from the future (2025), indicating that it is up-to-date.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result21_a785f1d8-0d94-4148-a3fc-f2eb99637c54",
+        "title": "India | Diwali Celebration",
+        "reason": "The document is relevant as it discusses a festival celebration (Diwali) in India, aligning with the user's location and group theme. The information is comprehensive, detailing the date, time, and activities of the celebration. The document is from the past (2024), but the information is still valuable for understanding how the festival is celebrated.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      }
+    ],
+    "somewhat_relevant": [
+      {
+        "doc_id": "backyard_result14_887c37db-6e6a-441b-8ae8-3f71ff190e73",
+        "title": "2023 Simpplr Canada Employee Handbook",
+        "reason": "The document is a 2023 Employee Handbook for Canada, which matches the group theme and year. It mentions 'vacation' which is somewhat related to 'holiday'. However, it does not directly answer the query about 'holiday' in the context of India, hence it's only somewhat relevant.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result22_d94e6c78-0736-4c6c-b508-721bff6fdd4a",
+        "title": "SIM169-Simpplr UK Employee Handbook 2023 [FINAL]",
+        "reason": "The document is a 2023 Employee Handbook for the UK, which matches the group theme and year. It mentions 'holiday periods', which is somewhat related to 'holiday'. However, it does not directly answer the query about 'holiday' in the context of India, hence it's only somewhat relevant.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result24_4c445bf1-7897-473b-b578-56342e9cd503",
+        "title": "2023 Simpplr UK Employee Handbook- SIM169",
+        "reason": "The document is a 2023 Employee Handbook for the UK, which matches the group theme and year. It mentions 'holiday periods', which is somewhat related to 'holiday'. However, it does not directly answer the query about 'holiday' in the context of India, hence it's only somewhat relevant.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result31_9a5b3f03-cbbc-4626-8266-8ec5c72b245f",
+        "title": "Office Closures and Holiday Hours 2024",
+        "reason": "The document provides information about office closures and holiday hours, which is somewhat related to the user's query about holidays. However, it does not provide specific details about the holidays or dates, making it less comprehensive. The document is current for the year 2024.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result8_cb1f6275-3e79-42f6-90e9-65fbfbd0a6fe",
+        "title": "Accrual Addenda 2025_Simpplr",
+        "reason": "The document discusses leave policies, which could be related to holidays as employees often take leave during holidays. However, it does not directly address the concept of holidays or holidays specific to India. The content is current (2025) and comprehensive regarding the topic of leave policies. The title is valid and meaningful.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result9_2aaa386d-04c9-4abe-b9a0-0e64f3d7c056",
+        "title": "2025 Simpplr US Employee Handbook",
+        "reason": "This 2025 employee handbook is specific to the US and mentions 'Recharge Days', which could be interpreted as a form of holiday. Although it doesn't directly address traditional holidays in India, it provides some related information that could be of interest.",
+        "confidence": "medium",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result4_ff2b7081-f611-48ec-a34b-bc45eaee4ba7",
+        "title": "India Employee Handbook V-1.4",
+        "reason": "This 2025 employee handbook for India discusses paternity leave, which, while not a traditional holiday, is a form of leave that could coincide with holidays. Therefore, it provides some related information that could be of interest, even though it doesn't directly address holidays.",
+        "confidence": "medium",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result5_81f4f152-12a3-420e-8bcb-dc0576ba165d",
+        "title": "India Employee Handbook_V-1.3",
+        "reason": "This 2025 employee handbook for India discusses sick leave (SL), which, while not a traditional holiday, is a form of leave that could coincide with holidays. Therefore, it provides some related information that could be of interest, even though it doesn't directly address holidays.",
+        "confidence": "medium",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result7_9cadfb48-9896-44e4-91e6-4bea68324cd2",
+        "title": "India Employee Handbook_Final",
+        "reason": "This 2025 employee handbook for India discusses sick leave (SL), which, while not a traditional holiday, is a form of leave that could coincide with holidays. Therefore, it provides some related information that could be of interest, even though it doesn't directly address holidays.",
+        "confidence": "medium",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result12_ad1ac810-75cc-42ca-b33a-e647384a797a",
+        "title": "India Employee Handbook_Final 15Jul24",
+        "reason": "This 2025 employee handbook for India discusses sick leave (SL), which, while not a traditional holiday, is a form of leave that could coincide with holidays. Therefore, it provides some related information that could be of interest, even though it doesn't directly address holidays.",
+        "confidence": "medium",
+        "labeled_by": "RelabelAgent"
+      }
+    ],
+    "acceptable": [
+      {
+        "doc_id": "backyard_result19_cfb59478-6d48-418d-9ba3-b6fa629c16c4",
+        "title": "Customer workshops - a guide for upcoming sessions and replays",
+        "reason": "The document is about customer workshops, which could be considered a type of 'holiday' in a business context, but it does not directly address traditional holidays or holidays in India. The content is current and comprehensive regarding the topic of customer workshops, but it does not fully answer the user's query about holidays. The title is valid and meaningful.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      }
+    ],
+    "not_sure": [
+      {
+        "doc_id": "backyard_result23_b3886d83-d203-48fb-a934-51e0e38634b7",
+        "title": "2023 Simpplr United States Employee Handbook",
+        "reason": "The document is a 2023 report focusing on the US, not India. It does not mention holidays, which is the central theme of the query. Therefore, it does not provide any useful information related to holidays in India.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result3_4e8e855e-2ae4-411c-901d-32cc977ce178",
+        "title": "2025 Simpplr UK Employee Handbook",
+        "reason": "This 2025 employee handbook is specific to the UK and does not mention holidays. Given the query's focus on holidays in India, this document does not provide any relevant information.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      }
+    ]
+  }
+}

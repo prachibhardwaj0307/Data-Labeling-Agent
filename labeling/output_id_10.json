@@ -1,0 +1,302 @@
+{
+  "updated_annotations": {
+    "relevant": [
+      "backyard_result1_ea5981fb-f98d-4bb3-9778-8f52f8bbb766",
+      "backyard_result11_f8b01968-fcd8-4c3f-bb5a-bfa22c6dd32b",
+      "backyard_result21_55ea2e18-e789-4a4b-93a7-9d6c8d7da1e6",
+      "backyard_result30_3011149825",
+      "backyard_result16_2994667838",
+      "backyard_result20_3037036546",
+      "backyard_result27_3078160455",
+      "backyard_result29_3046473738"
+    ],
+    "somewhat_relevant": [
+      "backyard_result23_2890006598",
+      "backyard_result28_2726888875",
+      "backyard_result7_a44bf659-899b-43d0-bf4c-df909cbad494"
+    ],
+    "acceptable": [
+      "backyard_result24_d884d86e-7631-4dd2-a167-2de2f6ca278e"
+    ],
+    "not_sure": [
+      "backyard_result26_2747760641"
+    ],
+    "irrelevant": [
+      "backyard_result2_75f8d084-a4cb-4dcc-8d1a-914c45092064",
+      "backyard_result3_e686ab27-a8e6-49bc-bc3b-3a35f46c7e6c",
+      "backyard_result4_008b37b3-7e13-49ed-94e0-c7495a11fd5a",
+      "backyard_result5_44ac34d0-2c54-4afd-a0ed-ef6ea56ddb35",
+      "backyard_result6_56ca4212-6337-410f-8936-312fcf49592a",
+      "backyard_result8_36ae7075-9328-4674-9ffa-d57f4666bf36",
+      "backyard_result9_88929f1f-33d6-4b70-9bef-e8cb7bf70a4b",
+      "backyard_result10_441563f1-72c1-4e2e-8d14-d77a633c2f9b",
+      "backyard_result12_21a9d6b0-1985-4883-b943-539d95e3e0e2",
+      "backyard_result13_8f2833be-a87e-4d88-a49a-9b90c7535ae6",
+      "backyard_result14_7e436505-194d-42bc-a2dc-7c9a7e1fad0e",
+      "backyard_result15_9e6842d2-3145-497b-be78-2ccb74e865fa",
+      "backyard_result17_2a84bdda-a798-40f8-ad56-f03946a0aece",
+      "backyard_result18_5e64637a-1239-4c2b-9176-ee1695d4f440",
+      "backyard_result19_6df30c9e-4f23-41e1-af91-2e3edcf5a027",
+      "backyard_result22_1dd1ca07-4282-473e-ad6f-94e7ef9780f9",
+      "backyard_result25_3063087105",
+      "backyard_result31_3158966711",
+      "backyard_result32_3129508085"
+    ]
+  },
+  "detailed_report": {
+    "query": "24.06",
+    "location": "India",
+    "statistics": {
+      "total_documents": 32,
+      "existing_labeled": 19,
+      "newly_processed": 13,
+      "filtered_out": 19,
+      "successfully_labeled": 13,
+      "group_review_attempts": 2,
+      "label_review_attempts": 1,
+      "label_distribution": {
+        "relevant": 8,
+        "somewhat_relevant": 3,
+        "acceptable": 1,
+        "not_sure": 1,
+        "irrelevant": 19
+      }
+    },
+    "labeling_details": {
+      "relevant": [
+        {
+          "doc_id": "backyard_result1_ea5981fb-f98d-4bb3-9778-8f52f8bbb766",
+          "title": "24.06 - All you need to know",
+          "reason": "The document provides comprehensive information about the 24.06 release, which is the user's query. It does not specify a location, implying that the information is applicable globally, including India. The document is also current, as it is from 2024.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result11_f8b01968-fcd8-4c3f-bb5a-bfa22c6dd32b",
+          "title": "24.06 release slides",
+          "reason": "The document is about the 24.06 release, directly addressing the user's query. It contains slides about the release, which can provide a detailed overview. The document does not specify a location, suggesting that the information is applicable to all regions, including India. The year is not mentioned, but it's assumed to be recent as it's about the 24.06 release.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result21_55ea2e18-e789-4a4b-93a7-9d6c8d7da1e6",
+          "title": "Analytics: AYNTK 24.06 Release",
+          "reason": "The document is about the 24.06 release, which is the user's query. It provides detailed information about the analytics aspect of the release. The document does not specify a location, implying that the information is relevant to all regions, including India. The year is not mentioned, but it's assumed to be recent as it's about the 24.06 release.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result30_3011149825",
+          "title": "24.06  Quarterly Release Report",
+          "reason": "The document provides a quarterly report about the 24.06 release, directly addressing the user's query. It includes detailed information about issues fixed in this release. The document does not specify a location, suggesting that the information is applicable to all regions, including India. The year is not mentioned, but it's assumed to be recent as it's about the 24.06 release.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result16_2994667838",
+          "title": "24.06 Sprint1",
+          "reason": "The document is directly related to the query '24.06' as it discusses '24.06 Sprint1'. The content, although not comprehensive, seems to be about the sprint's resolution dates. There is no mention of a specific location, so it's assumed to be relevant to all locations including the user's location, India.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result20_3037036546",
+          "title": "24.06 Sprint2",
+          "reason": "The document is directly related to the query '24.06' as it discusses '24.06 Sprint2'. The content, although not comprehensive, seems to be about the sprint's resolution dates. There is no mention of a specific location, so it's assumed to be relevant to all locations including the user's location, India.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result27_3078160455",
+          "title": "24.04 - 24.06 Quarter Release Retrospective",
+          "reason": "The document provides a retrospective analysis of the 24.06 release, which directly answers the user's query. The location is not specified, but since the user's location doesn't affect the content, it is considered relevant. The content is comprehensive and provides a clear understanding of what a release retrospective is.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result29_3046473738",
+          "title": "Absolute - 24.06  Retrospective",
+          "reason": "The document provides a retrospective analysis of the 24.06 release, which directly answers the user's query. The location is not specified, but since the user's location doesn't affect the content, it is considered relevant. The content is comprehensive and provides a clear understanding of the priorities in a release retrospective.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        }
+      ],
+      "somewhat_relevant": [
+        {
+          "doc_id": "backyard_result23_2890006598",
+          "title": "24.06 Sprint1 & 2",
+          "reason": "The document title is directly related to the query '24.06' as it discusses '24.06 Sprint1 & 2'. However, the content is not comprehensive as it only says 'Read more', providing no further information about the sprints. There is no mention of a specific location, so it's assumed to be relevant to all locations including the user's location, India.",
+          "confidence": "low",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result28_2726888875",
+          "title": "(24.01 - 24.06) Release Retrospective",
+          "reason": "The document provides a retrospective analysis of the 24.06 release, which partially answers the user's query. However, it also includes information about the 24.01 release, which is not asked for in the query. The location is not specified, but since the user's location doesn't affect the content, it is considered somewhat relevant.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result7_a44bf659-899b-43d0-bf4c-df909cbad494",
+          "title": "24.04 / 24.05 - All you need to know",
+          "reason": "The document provides information about releases 24.04 and 24.05, which are close to the queried release 24.06. However, it does not directly address the query for release 24.06. The document does not specify a location, so it is assumed to be globally relevant. The information is from 2024, which is relatively recent.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        }
+      ],
+      "acceptable": [
+        {
+          "doc_id": "backyard_result24_d884d86e-7631-4dd2-a167-2de2f6ca278e",
+          "title": "23.06 release slides",
+          "reason": "The document provides information about release 23.06, which is related but not exactly the queried release 24.06. The document does not specify a location, so it is assumed to be globally relevant. The information is from 2022 and 2023, which is relatively recent but not the most current.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        }
+      ],
+      "not_sure": [
+        {
+          "doc_id": "backyard_result26_2747760641",
+          "title": "22/01/24",
+          "reason": "The document does not contain any information related to the query '24.06'. The title '22/01/24' could be interpreted as a date, but it doesn't match the user's query. The content of the document is about meeting notes and action items, which are not related to the query. There is no mention of the user's location, India, in the document.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        }
+      ]
+    },
+    "filtered_documents": [
+      {
+        "doc_id": "backyard_result2_75f8d084-a4cb-4dcc-8d1a-914c45092064",
+        "title": "25.06 - All you need to know",
+        "reason": "The document is about '25.06' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result3_e686ab27-a8e6-49bc-bc3b-3a35f46c7e6c",
+        "title": "23.06 - All You Need to Know",
+        "reason": "The document is about '23.06' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result4_008b37b3-7e13-49ed-94e0-c7495a11fd5a",
+        "title": "24.08 - All you need to know",
+        "reason": "The document is about '24.08' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result5_44ac34d0-2c54-4afd-a0ed-ef6ea56ddb35",
+        "title": "25.04 - All you need to know",
+        "reason": "The document is about '25.04' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result6_56ca4212-6337-410f-8936-312fcf49592a",
+        "title": "25.07 - All you need to know",
+        "reason": "The document is about '25.07' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result8_36ae7075-9328-4674-9ffa-d57f4666bf36",
+        "title": "25.05 - All you need to know",
+        "reason": "The document is about '25.05' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result9_88929f1f-33d6-4b70-9bef-e8cb7bf70a4b",
+        "title": "24.09 - All you need to know",
+        "reason": "The document is about '24.09' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result10_441563f1-72c1-4e2e-8d14-d77a633c2f9b",
+        "title": "24.11 - All you need to know",
+        "reason": "The document is about '24.11' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result12_21a9d6b0-1985-4883-b943-539d95e3e0e2",
+        "title": "24.10 - All you need to know",
+        "reason": "The document is about '24.10' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result13_8f2833be-a87e-4d88-a49a-9b90c7535ae6",
+        "title": "25.03 - All you need to know",
+        "reason": "The document is about '25.03' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result14_7e436505-194d-42bc-a2dc-7c9a7e1fad0e",
+        "title": "24.03 - All you need to know",
+        "reason": "The document is about '24.03' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result15_9e6842d2-3145-497b-be78-2ccb74e865fa",
+        "title": "25.02 - All you need to know",
+        "reason": "The document is about '25.02' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result17_2a84bdda-a798-40f8-ad56-f03946a0aece",
+        "title": "24.12 - All you need to know",
+        "reason": "The document is about '24.12' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result18_5e64637a-1239-4c2b-9176-ee1695d4f440",
+        "title": "25.07 Internal Demo",
+        "reason": "The document is about '25.07' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result19_6df30c9e-4f23-41e1-af91-2e3edcf5a027",
+        "title": "25.01 - All you need to know",
+        "reason": "The document is about '25.01' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result22_1dd1ca07-4282-473e-ad6f-94e7ef9780f9",
+        "title": "25.07 Internal demo replay",
+        "reason": "The document is about '25.07' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result25_3063087105",
+        "title": "24.08 Sprint1",
+        "reason": "The document is about '24.08' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result31_3158966711",
+        "title": "24.09 Sprint2",
+        "reason": "The document is about '24.09' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result32_3129508085",
+        "title": "24.09 Sprint1",
+        "reason": "The document is about '24.09' release, which is not related to the user's query '24.06'",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      }
+    ]
+  }
+}

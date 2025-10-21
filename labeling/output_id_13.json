@@ -1,0 +1,298 @@
+{
+  "updated_annotations": {
+    "relevant": [],
+    "somewhat_relevant": [
+      "backyard_result1_0f483142-bdb2-4d6f-aabd-640f5b27a912"
+    ],
+    "acceptable": [],
+    "not_sure": [
+      "backyard_result9_aaffdddd-414b-4ccc-9e87-3e8d56b33270",
+      "backyard_result10_9d5b601f-b09e-42c1-a10b-5401cbed9e00",
+      "backyard_result11_899b815e-1009-45d4-884c-6443fc734efd",
+      "backyard_result12_7ffff724-d496-425c-8797-9db73160b46e",
+      "backyard_result20_6456cef3-e769-4f09-a90b-fbb1c5e51037",
+      "backyard_result31_e2bf6869-7ca8-4a28-8beb-31e2f41d0b7d",
+      "backyard_result13_e533c602-f691-4a3e-8fa8-7d3f4e46ced7",
+      "backyard_result14_88ca07f7-f584-4a74-82bd-90bca1e4c323",
+      "backyard_result15_2900545e-7e9e-4048-bb4a-55ff032c019c",
+      "backyard_result16_911d5c5f-1f77-491a-8c6d-8e78fdb2e26e",
+      "backyard_result17_296374ff-569f-40ca-8ddf-063882b82e3b",
+      "backyard_result18_0f2ef5b1-48c6-4180-87f3-859e84206695",
+      "backyard_result28_f05af397-341b-43b5-8f24-21eace3d8dc0",
+      "backyard_result6_8d7a2d5a-1ecc-4467-bafa-86f22156f911",
+      "backyard_result7_09707698-b8b9-4a18-a7e6-21b94103f7ce",
+      "backyard_result8_d6556c5f-910f-4903-afc5-bd59403c8c77"
+    ],
+    "irrelevant": [
+      "backyard_result2_9d2bec18-cbfe-4261-b087-53b38af6ad58",
+      "backyard_result3_6af6ba17-d823-4cd2-bb25-7e4fae34630f",
+      "backyard_result4_faf7de93-89d7-4952-86d0-bf2212436723",
+      "backyard_result5_2fac4a1b-f5db-443f-8bc3-cf72c5dd8a33",
+      "backyard_result19_f404e71e-2230-4ca3-86ce-7ec2e79541a8",
+      "backyard_result21_18ff9161-6ed5-4530-b312-4440150139cf",
+      "backyard_result22_0e0127b6-0df6-49ff-9bb8-a4382db9400c",
+      "backyard_result23_bb3abc72-b14c-4e8f-84d8-82b60ab393c1",
+      "backyard_result24_0a7549e1-0f6e-4371-b1c9-125e20408bea",
+      "backyard_result25_a943fc3c-4f62-4726-9ffc-de61ee1462cc",
+      "backyard_result26_3d80174b-dcf4-45e7-ba4e-5ffb4ad2e693",
+      "backyard_result27_72fa763b-6f31-4cab-9b37-7f6533c52b2e",
+      "backyard_result29_5c23cb2b-ae3b-434c-8ea8-aa2d09c2fa32",
+      "backyard_result30_d8c91b88-0670-4ac2-a5ff-3fa5b606dcc0",
+      "backyard_result32_c2d6c900-2a45-4e75-80e5-93af1018c09a"
+    ]
+  },
+  "detailed_report": {
+    "query": "pratik",
+    "location": "India",
+    "statistics": {
+      "total_documents": 32,
+      "existing_labeled": 15,
+      "newly_processed": 17,
+      "filtered_out": 15,
+      "successfully_labeled": 17,
+      "group_review_attempts": 2,
+      "label_review_attempts": 3,
+      "label_distribution": {
+        "relevant": 0,
+        "somewhat_relevant": 1,
+        "acceptable": 0,
+        "not_sure": 16,
+        "irrelevant": 15
+      }
+    },
+    "labeling_details": {
+      "relevant": [],
+      "somewhat_relevant": [
+        {
+          "doc_id": "backyard_result1_0f483142-bdb2-4d6f-aabd-640f5b27a912",
+          "title": "Pratik Yagnik",
+          "reason": "The document title mentions 'Pratik Yagnik' which matches the query 'pratik'. However, the document does not provide any further information about this individual, making it only somewhat relevant to the query. The document also lacks a year or location information, which limits its relevance.",
+          "confidence": "medium",
+          "labeled_by": "RelabelAgent"
+        }
+      ],
+      "acceptable": [],
+      "not_sure": [
+        {
+          "doc_id": "backyard_result9_aaffdddd-414b-4ccc-9e87-3e8d56b33270",
+          "title": "No Title",
+          "reason": "The document has no valid title and the content is insufficient to determine its relevance to the query 'pratik'. There is no mention of the query term or any related terms in the document.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result10_9d5b601f-b09e-42c1-a10b-5401cbed9e00",
+          "title": "No Title",
+          "reason": "The document has no valid title and the content is insufficient to determine its relevance to the query 'pratik'. There is no mention of the query term or any related terms in the document.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result11_899b815e-1009-45d4-884c-6443fc734efd",
+          "title": "No Title",
+          "reason": "The document has no title and the content is insufficient to determine relevance to the query 'pratik'. There is no mention of the query term or any related terms in the document.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result12_7ffff724-d496-425c-8797-9db73160b46e",
+          "title": "No Title",
+          "reason": "The document has no title and the content is insufficient to determine relevance to the query 'pratik'. There is no mention of the query term or any related terms in the document.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result20_6456cef3-e769-4f09-a90b-fbb1c5e51037",
+          "title": "Prateek Parashar",
+          "reason": "The document title contains the name 'Prateek', which is not an exact match to the query 'pratik'. The document does not provide any further information about this individual or any location or year information, making it difficult to determine its relevance to the query.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result31_e2bf6869-7ca8-4a28-8beb-31e2f41d0b7d",
+          "title": "Parinay Prateek",
+          "reason": "The document title 'Parinay Prateek' does not exactly match the query 'pratik'. The content only says 'Read more', providing no useful information about the individual or any location or year information, making it difficult to determine its relevance to the query.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result13_e533c602-f691-4a3e-8fa8-7d3f4e46ced7",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result14_88ca07f7-f584-4a74-82bd-90bca1e4c323",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result15_2900545e-7e9e-4048-bb4a-55ff032c019c",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result16_911d5c5f-1f77-491a-8c6d-8e78fdb2e26e",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result17_296374ff-569f-40ca-8ddf-063882b82e3b",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result18_0f2ef5b1-48c6-4180-87f3-859e84206695",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result28_f05af397-341b-43b5-8f24-21eace3d8dc0",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result6_8d7a2d5a-1ecc-4467-bafa-86f22156f911",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result7_09707698-b8b9-4a18-a7e6-21b94103f7ce",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        },
+        {
+          "doc_id": "backyard_result8_d6556c5f-910f-4903-afc5-bd59403c8c77",
+          "title": "No Title",
+          "reason": "The document lacks a title and the content does not mention 'pratik' or provide any relevant information related to the query. The absence of location or year information further complicates the relevance determination.",
+          "confidence": "high",
+          "labeled_by": "RelabelAgent"
+        }
+      ]
+    },
+    "filtered_documents": [
+      {
+        "doc_id": "backyard_result2_9d2bec18-cbfe-4261-b087-53b38af6ad58",
+        "title": "No Title",
+        "reason": "The document has no title and no content preview, making it impossible to determine its relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result3_6af6ba17-d823-4cd2-bb25-7e4fae34630f",
+        "title": "test",
+        "reason": "The document title 'test' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result4_faf7de93-89d7-4952-86d0-bf2212436723",
+        "title": "test",
+        "reason": "The document title 'test' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result5_2fac4a1b-f5db-443f-8bc3-cf72c5dd8a33",
+        "title": "test.php",
+        "reason": "The document title 'test.php' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result19_f404e71e-2230-4ca3-86ce-7ec2e79541a8",
+        "title": "Product Enablement",
+        "reason": "The document title 'Product Enablement' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result21_18ff9161-6ed5-4530-b312-4440150139cf",
+        "title": "Coding Principles",
+        "reason": "The document title 'Coding Principles' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result22_0e0127b6-0df6-49ff-9bb8-a4382db9400c",
+        "title": "REST APIs",
+        "reason": "The document title 'REST APIs' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result23_bb3abc72-b14c-4e8f-84d8-82b60ab393c1",
+        "title": "Proof of Concept (PoC) Guidelines",
+        "reason": "The document title 'Proof of Concept (PoC) Guidelines' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result24_0a7549e1-0f6e-4371-b1c9-125e20408bea",
+        "title": "HAR file for trouble shooting",
+        "reason": "The document title 'HAR file for trouble shooting' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result25_a943fc3c-4f62-4726-9ffc-de61ee1462cc",
+        "title": "ElasticSearch - How do we use it !!",
+        "reason": "The document title 'ElasticSearch - How do we use it !!' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result26_3d80174b-dcf4-45e7-ba4e-5ffb4ad2e693",
+        "title": "Guide to Developers Tool",
+        "reason": "The document title 'Guide to Developers Tool' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result27_72fa763b-6f31-4cab-9b37-7f6533c52b2e",
+        "title": "Tools",
+        "reason": "The document title 'Tools' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result29_5c23cb2b-ae3b-434c-8ea8-aa2d09c2fa32",
+        "title": "Trainings",
+        "reason": "The document title 'Trainings' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result30_d8c91b88-0670-4ac2-a5ff-3fa5b606dcc0",
+        "title": "Simpplr Dictionary",
+        "reason": "The document title 'Simpplr Dictionary' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result32_c2d6c900-2a45-4e75-80e5-93af1018c09a",
+        "title": "Test for image copy paste",
+        "reason": "The document title 'Test for image copy paste' and content preview do not suggest any relevance to the query 'pratik'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      }
+    ]
+  }
+}

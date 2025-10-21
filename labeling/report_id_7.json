@@ -1,0 +1,256 @@
+{
+  "query": "handbook",
+  "location": "India",
+  "statistics": {
+    "total_documents": 32,
+    "existing_labeled": 7,
+    "newly_processed": 25,
+    "filtered_out": 7,
+    "successfully_labeled": 25,
+    "group_review_attempts": 1,
+    "label_review_attempts": 3,
+    "label_distribution": {
+      "relevant": 6,
+      "somewhat_relevant": 1,
+      "acceptable": 7,
+      "not_sure": 11,
+      "irrelevant": 7
+    }
+  },
+  "labeling_details": {
+    "relevant": [
+      {
+        "doc_id": "backyard_result1_ff2b7081-f611-48ec-a34b-bc45eaee4ba7",
+        "title": "India Employee Handbook V-1.4",
+        "reason": "The document content is a comprehensive employee handbook for a company in India, covering a wide range of topics relevant to employees. It matches the user's query and location.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result8_81f4f152-12a3-420e-8bcb-dc0576ba165d",
+        "title": "India Employee Handbook_V-1.3",
+        "reason": "The document content is a comprehensive employee handbook for a company in India, covering a wide range of topics relevant to employees. It matches the user's query and location.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result11_9cadfb48-9896-44e4-91e6-4bea68324cd2",
+        "title": "India Employee Handbook_Final",
+        "reason": "The document content is a comprehensive employee handbook for a company in India, covering a wide range of topics relevant to employees. It matches the user's query and location.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result14_ad1ac810-75cc-42ca-b33a-e647384a797a",
+        "title": "India Employee Handbook_Final 15Jul24",
+        "reason": "The document content is a comprehensive employee handbook for a company in India, covering a wide range of topics relevant to employees. It matches the user's query and location.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result13_875d8d9c-ed08-4a1d-bd90-a9b052d17118",
+        "title": "Simpplr_Parental Service Handbook",
+        "reason": "The content of the document is a handbook for health insurance policy for Simpplr Software India Pvt. Ltd., which matches the user's query and location. The document is current, with the policy period from 2023 to 2024.",
+        "confidence": "high",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result30_3e647c1a-9d3b-4d76-b2aa-56942d3c26a6",
+        "title": "ACKO_APP_Manual_New (1)",
+        "reason": "The document content is about an employee enrolment process, which could be considered a type of handbook. The document also mentions an 'Acko Insurance app', which is an Indian company, indicating that the document is relevant to the user's location in India.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      }
+    ],
+    "somewhat_relevant": [
+      {
+        "doc_id": "backyard_result7_e7911525-376c-47e5-936a-ebe81ba37000",
+        "title": "India Employee Handbook",
+        "reason": "The document content is an employee handbook for a company in India, but it's less comprehensive than the other documents. It still matches the user's query and location.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      }
+    ],
+    "acceptable": [
+      {
+        "doc_id": "backyard_result17_7705794a-0bac-400b-a5eb-319e7a03cefa",
+        "title": "Recognition and Rewards Sales Handbook",
+        "reason": "The document is a sales handbook, which matches the user's query. However, the location is not specified in the document, so it's considered as global information.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result29_2639167519",
+        "title": "Ultimate Microservice handbook",
+        "reason": "The document is a microservice handbook, which matches the user's query. However, the location is not specified in the document, so it's considered as global information.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result18_c7935e1c-ef23-47a1-8089-bc8148f27a09",
+        "title": "Simpplr Salary Exchange Detailed Guide (1)",
+        "reason": "The document content provides a detailed guide on Salary Exchange, which can be considered as a handbook. However, the document does not specify the location, and it mentions 'National Insurance', which is a UK term, suggesting it might not be specific to India.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result22_5770c956-d5b4-4d3a-b4d1-587835cf2c0f",
+        "title": "Content Promotion Governance Workbook",
+        "reason": "The document content provides a workbook on content promotion governance, which aligns with the query 'handbook'. However, the document does not specify the location, so it's not clear whether it's specific to India.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result24_5a0988c1-22da-4f95-a254-a46e883bd3c2",
+        "title": "Simpplr One Upgrade CSM Playbook - A Comprehensive Guide",
+        "reason": "The document content provides a comprehensive guide on platform upgrades, which can be considered as a handbook. However, the document does not specify the location, so it's not clear whether it's specific to India.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result16_cb1f6275-3e79-42f6-90e9-65fbfbd0a6fe",
+        "title": "Accrual Addenda 2025_Simpplr",
+        "reason": "The document content refers to an addendum to a handbook, which is related to the user's query. However, the location is not specified, so it is not clear if it is relevant to the user's location in India.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      },
+      {
+        "doc_id": "backyard_result32_2c716f20-95f6-4ea1-9516-e677b5860849",
+        "title": "Simpplr Inc. WVPP_7.1.2025",
+        "reason": "The document content is about a plan to prevent or respond to violence, which could be considered a type of handbook. However, the location is not specified, so it is not clear if it is relevant to the user's location in India.",
+        "confidence": "medium",
+        "labeled_by": "LabelingAgent"
+      }
+    ],
+    "not_sure": [
+      {
+        "doc_id": "backyard_result27_5007fdcb-1d4d-469d-9f67-64b6ec10509a",
+        "title": "Sales Enablement Live: February 19, 2025",
+        "reason": "The document content is about a sales enablement live event and does not mention a handbook, which is the user's query. The location is also not specified, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result2_4e8e855e-2ae4-411c-901d-32cc977ce178",
+        "title": "2025 Simpplr UK Employee Handbook",
+        "reason": "The 2025 document discusses an employee handbook, but it is specifically for the United Kingdom, not the user's location of India. This makes the information not applicable to the user's context.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result5_512ee269-3c5f-4fea-9420-289fa053beba",
+        "title": "United Kingdom Employee Handbook",
+        "reason": "The document discusses an employee handbook but it is specific to the United Kingdom, not the user's location of India. The document does not specify a year, further limiting its relevance to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result9_d94e6c78-0736-4c6c-b508-721bff6fdd4a",
+        "title": "SIM169-Simpplr UK Employee Handbook 2023 [FINAL]",
+        "reason": "Despite discussing an employee handbook, the 2023 document is specific to the United Kingdom and not applicable to the user's location of India, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result12_4c445bf1-7897-473b-b578-56342e9cd503",
+        "title": "2023 Simpplr UK Employee Handbook- SIM169",
+        "reason": "Although the 2023 document discusses an employee handbook, it is specific to the United Kingdom, not the user's location of India, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result3_2aaa386d-04c9-4abe-b9a0-0e64f3d7c056",
+        "title": "2025 Simpplr US Employee Handbook",
+        "reason": "The 2025 document discusses an employee handbook, but it is specifically for employees in the United States, not India, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result4_6b320369-61db-41b7-8e9a-2972899056d9",
+        "title": "United States Employee Handbook",
+        "reason": "The document discusses an employee handbook, but it is for employees in the United States, not the user's location of India. The document does not specify a year, further limiting its relevance to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result10_b3886d83-d203-48fb-a934-51e0e38634b7",
+        "title": "2023 Simpplr United States Employee Handbook",
+        "reason": "The 2023 document discusses an employee handbook, but it is for employees in the United States, not the user's location of India, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result6_a3519f66-6f82-47a8-98e0-c9e008d379ac",
+        "title": "Canada Employee Handbook",
+        "reason": "The document discusses an employee handbook, but it is specifically for employees in Canada, not India, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result23_887c37db-6e6a-441b-8ae8-3f71ff190e73",
+        "title": "2023 Simpplr Canada Employee Handbook",
+        "reason": "The document discusses a handbook for employees in Canada, which is not relevant to the user's location, India, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      },
+      {
+        "doc_id": "backyard_result25_b1af3a39-8909-4b79-b23a-f284eb6cb113",
+        "title": "Mental Health Toolkit",
+        "reason": "The document content is about a mental health toolkit and does not mention a handbook, which is the user's query. The location is also not specified, making it irrelevant to the user's query.",
+        "confidence": "high",
+        "labeled_by": "RelabelAgent"
+      }
+    ]
+  },
+  "filtered_documents": [
+    {
+      "doc_id": "backyard_result15_b3596512-a58f-4a92-9ba9-4bf6f69bdbb1",
+      "title": "Outreach Guide",
+      "reason": "The document titled 'Outreach Guide' is not related to 'handbook'. It appears to be a guide for using the Outreach platform.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    },
+    {
+      "doc_id": "backyard_result19_72fa763b-6f31-4cab-9b37-7f6533c52b2e",
+      "title": "Tools",
+      "reason": "The document titled 'Tools' does not contain any content preview, making it impossible to determine its relevance to the query 'handbook'.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    },
+    {
+      "doc_id": "backyard_result20_574c302a-b956-4548-93c8-ced903c05096",
+      "title": "POSH POSTER",
+      "reason": "The document titled 'POSH POSTER' is not related to 'handbook'. It appears to be a poster about sexual harassment at the workplace.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    },
+    {
+      "doc_id": "backyard_result21_7bcf2195-1833-495c-be03-165307d73912",
+      "title": "Express Implementation Models",
+      "reason": "The document titled 'Express Implementation Models' is not related to 'handbook'. It appears to be about implementation models for a product.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    },
+    {
+      "doc_id": "backyard_result26_fa539307-8064-4992-8200-5f2d754ab8c8",
+      "title": "FMLA Poster",
+      "reason": "The document titled 'FMLA Poster' is not related to 'handbook'. It appears to be a poster about the Family and Medical Leave Act.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    },
+    {
+      "doc_id": "backyard_result28_039fc07e-88c7-4be6-bbc2-d3d631bdd6f8",
+      "title": "Knowledge base",
+      "reason": "The document titled 'Knowledge base' does not contain any content preview, making it impossible to determine its relevance to the query 'handbook'.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    },
+    {
+      "doc_id": "backyard_result31_9c2f454b-c19d-4bd5-8439-c35fedf9644a",
+      "title": "Greenhouse Guide_ Referrals",
+      "reason": "The document titled 'Greenhouse Guide_ Referrals' is not related to 'handbook'. It appears to be a guide for using the Greenhouse platform.",
+      "confidence": "high",
+      "labeled_by": "FilterAgent"
+    }
+  ]
+}

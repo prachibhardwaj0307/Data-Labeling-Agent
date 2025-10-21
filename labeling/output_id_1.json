@@ -1,0 +1,302 @@
+{
+  "updated_annotations": {
+    "relevant": [
+      "backyard_result2_dcaec001-e23b-4af2-81bd-175fa7de1971",
+      "backyard_result6_ba303f3a-85d0-48d1-8e8f-a8254fa6417b",
+      "backyard_result13_34372540-0ae7-4b7c-96ee-03a384c48ac1",
+      "backyard_result23_77670da3-1160-4322-8310-73d15e1f1581",
+      "backyard_result9_ff2b7081-f611-48ec-a34b-bc45eaee4ba7",
+      "backyard_result28_35f7180f-3d3d-43db-9954-71a6597c3ae7",
+      "backyard_result1_cb1f6275-3e79-42f6-90e9-65fbfbd0a6fe",
+      "backyard_result11_c7935e1c-ef23-47a1-8089-bc8148f27a09",
+      "backyard_result22_1aec7930-6764-4605-9b0a-0c46c8c6c409"
+    ],
+    "somewhat_relevant": [
+      "backyard_result3_1f7af396-f0b1-4bbe-bddd-70aa3deb641f",
+      "backyard_result5_deed26c2-07b5-4a43-8f04-cbd4617dab05",
+      "backyard_result17_4d4ab456-d1f6-4ee4-83bb-539458220083",
+      "backyard_result12_81f4f152-12a3-420e-8bcb-dc0576ba165d",
+      "backyard_result25_9cadfb48-9896-44e4-91e6-4bea68324cd2",
+      "backyard_result19_466cd2f1-2beb-4d59-9990-8ee6cf9aa713",
+      "backyard_result7_3193667612",
+      "backyard_result31_6e79300e-77ef-4981-b714-9afb17bdf445"
+    ],
+    "acceptable": [
+      "backyard_result8_2aaa386d-04c9-4abe-b9a0-0e64f3d7c056",
+      "backyard_result20_cca48c28-261a-4396-acdf-a79bf0780c30"
+    ],
+    "not_sure": [
+      "backyard_result30_3d821066-4e51-42d5-b74b-a55cc0681163",
+      "backyard_result18_65bfef26-f782-42e6-b3ab-3f798713b94c"
+    ],
+    "irrelevant": [
+      "backyard_result4_b5eb25e7-5517-40b2-a8e9-fd09266bf42d",
+      "backyard_result10_d3bcc20e-7690-41b5-a78e-1aab7272a991",
+      "backyard_result14_4e8e855e-2ae4-411c-901d-32cc977ce178",
+      "backyard_result15_efa20afc-5f97-4486-b32c-717b81be79c9",
+      "backyard_result16_e861ab22-da2c-4da2-b2fd-73d3fa18dfe7",
+      "backyard_result21_4cb02b1c-6b7e-4ed2-bb9f-ef869beb0acf",
+      "backyard_result24_459a8490-90ea-4cbe-9abc-138c79869961",
+      "backyard_result26_887c37db-6e6a-441b-8ae8-3f71ff190e73",
+      "backyard_result27_9d9dea0e-d526-4ae7-9013-9304a597f6d4",
+      "backyard_result29_700a1f4a-0c45-42b0-8669-4a67d09a170a",
+      "backyard_result32_f260c249-3ec0-4763-9eda-f9dfa2b56034"
+    ]
+  },
+  "detailed_report": {
+    "query": "benefits",
+    "location": "India",
+    "statistics": {
+      "total_documents": 32,
+      "existing_labeled": 11,
+      "newly_processed": 21,
+      "filtered_out": 11,
+      "successfully_labeled": 21,
+      "group_review_attempts": 1,
+      "label_review_attempts": 1,
+      "label_distribution": {
+        "relevant": 9,
+        "somewhat_relevant": 8,
+        "acceptable": 2,
+        "not_sure": 2,
+        "irrelevant": 11
+      }
+    },
+    "labeling_details": {
+      "relevant": [
+        {
+          "doc_id": "backyard_result2_dcaec001-e23b-4af2-81bd-175fa7de1971",
+          "title": "Simpplr 2025 S1 Open Enrollment Presentation",
+          "reason": "The document is a presentation about the 2025 Open Enrollment for Simpplr, which directly relates to the query about 'benefits'. The information is current (from 2025) and comprehensive, discussing company-provided benefits. The location is not specified but it's related to Simpplr, which matches the group theme.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result6_ba303f3a-85d0-48d1-8e8f-a8254fa6417b",
+          "title": "Workshop 4 - Engage and Retain - Showcasing Benefits like a Pro! 2025.02.27",
+          "reason": "This document is a workshop presentation about showcasing benefits at Simpplr, which directly answers the query. The information is from 2025, making it current and it provides comprehensive information about employee benefits. The location is not specified but it's related to Simpplr, which matches the group theme.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result13_34372540-0ae7-4b7c-96ee-03a384c48ac1",
+          "title": "Simpplr_Software_Insurance_Benefits",
+          "reason": "The document is a presentation about the insurance benefits provided by Simpplr Software, which directly answers the query about 'benefits'. The information is comprehensive, discussing specific details about the health policy. The location is not specified but it's related to Simpplr, which matches the group theme.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result23_77670da3-1160-4322-8310-73d15e1f1581",
+          "title": "SIMPPLR SOFTWARE Parental Policy PPT (1)",
+          "reason": "The document is a presentation about the parental policy and benefits provided by Simpplr Software India Pvt Ltd, which directly answers the query about 'benefits'. The information is current (from 2022-2023) and comprehensive. The location is India, which matches the user's location.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result9_ff2b7081-f611-48ec-a34b-bc45eaee4ba7",
+          "title": "India Employee Handbook V-1.4",
+          "reason": "The document is an India Employee Handbook and directly addresses the query about benefits. It provides comprehensive information about specific benefits for female employees, including nursing breaks and childcare facilities, in accordance with the Maternity Benefit Act, 1961.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result28_35f7180f-3d3d-43db-9954-71a6597c3ae7",
+          "title": "Maternity Leave Policy (India)",
+          "reason": "This document is highly relevant as it directly addresses the query about benefits. It outlines the Maternity Leave and Benefits policy for female employees at Simpplr in India. The document does not mention a specific year, but it provides comprehensive information about the maternity benefits, meeting the user's query.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result1_cb1f6275-3e79-42f6-90e9-65fbfbd0a6fe",
+          "title": "Accrual Addenda 2025_Simpplr",
+          "reason": "The document directly addresses the query 'benefits' by discussing employment benefits at Simpplr, including leave policies and job restoration. However, it does not specify the location or the recency, but the content is comprehensive.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result11_c7935e1c-ef23-47a1-8089-bc8148f27a09",
+          "title": "Simpplr Salary Exchange Detailed Guide (1)",
+          "reason": "The document provides detailed information about the Salary Exchange arrangement at Simpplr, which can be considered a form of benefit. It does not specify the location or the recency, but the content is comprehensive.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result22_1aec7930-6764-4605-9b0a-0c46c8c6c409",
+          "title": "AXA Private Medical Insurance",
+          "reason": "The document discusses the rollout of a private medical insurance benefit at Simpplr, directly addressing the query. The recency is specified (July 1, 2022), but the location is not. The content is comprehensive.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        }
+      ],
+      "somewhat_relevant": [
+        {
+          "doc_id": "backyard_result3_1f7af396-f0b1-4bbe-bddd-70aa3deb641f",
+          "title": "2025 S1 BB All HQs - Simpplr July 2025",
+          "reason": "The document provides comprehensive information about the benefits provided by Simpplr, which is directly related to the query. However, the document is from 2025 and the user's location is India, while the benefits listed are specific to regions in the USA (e.g., Nor CA, So CA, Hawaii, Nevada). Therefore, this document might not be fully relevant to the user.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result5_deed26c2-07b5-4a43-8f04-cbd4617dab05",
+          "title": "Simpplr Benefit Booklet_PY24_25",
+          "reason": "The document provides information about how to find a vision provider, which is a type of employee benefit. However, it does not provide a comprehensive overview of all benefits, and it is unclear what year this document is from. Additionally, the user's location is India, and the document seems to be more relevant to users in the USA.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result17_4d4ab456-d1f6-4ee4-83bb-539458220083",
+          "title": "Simpplr 2021-22 Benefit Booklet (6)",
+          "reason": "The document provides detailed information about the benefits provided by Simpplr, which is directly related to the query. However, the document is from 2021-2022 and the user's location is India, while the benefits listed are specific to regions in the USA (e.g., Nor CA, So CA). Therefore, this document might not be fully relevant to the user.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result12_81f4f152-12a3-420e-8bcb-dc0576ba165d",
+          "title": "India Employee Handbook_V-1.3",
+          "reason": "The document is an India Employee Handbook and partially addresses the query about benefits. It provides information about maternity leave, which is a specific type of benefit, but does not provide comprehensive information about other types of benefits.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result25_9cadfb48-9896-44e4-91e6-4bea68324cd2",
+          "title": "India Employee Handbook_Final",
+          "reason": "The document is an India Employee Handbook and partially addresses the query about benefits. It provides information about maternity leave, which is a specific type of benefit, but does not provide comprehensive information about other types of benefits.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result19_466cd2f1-2beb-4d59-9990-8ee6cf9aa713",
+          "title": "2025 Simpplr External Workforce Policy 1.1",
+          "reason": "The document is a policy for the external workforce at Simpplr, and it does mention 'Compensation and Benefits' in the content. However, it does not provide specific details about the benefits, which is the main query. The document is recent, from 2025, and it is globally applicable, not specific to India.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result7_3193667612",
+          "title": "Benefits Model Issues",
+          "reason": "This document discusses issues related to the display of employee's Benefit details, which is somewhat related to the query. However, it does not provide comprehensive information about the benefits themselves, and the location and recency are not specified.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result31_6e79300e-77ef-4981-b714-9afb17bdf445",
+          "title": "Anonymized RVA - Benefits Company w/4000 Employees",
+          "reason": "The document discusses a value assessment for a company in the benefits industry, which could be somewhat relevant to the query about 'benefits'. However, it does not provide comprehensive information about benefits, rather it provides a specific case study. The document does not mention a specific year, so recency cannot be determined. The title is valid, but the content does not match the user's specified location.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        }
+      ],
+      "acceptable": [
+        {
+          "doc_id": "backyard_result8_2aaa386d-04c9-4abe-b9a0-0e64f3d7c056",
+          "title": "2025 Simpplr US Employee Handbook",
+          "reason": "The document is a US Employee Handbook from 2025 and does not directly address the query about benefits in India. However, it does provide some context about Simpplr's policies, including work schedule and overtime, which could be considered as indirect benefits.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result20_cca48c28-261a-4396-acdf-a79bf0780c30",
+          "title": "Simpplr Win: BenefitMall",
+          "reason": "This document mentions a 'win' with BenefitMall, which could be interpreted as a benefit. However, it does not provide direct information about benefits at Simpplr, and the location and recency are not specified.",
+          "confidence": "medium",
+          "labeled_by": "LabelingAgent"
+        }
+      ],
+      "not_sure": [
+        {
+          "doc_id": "backyard_result30_3d821066-4e51-42d5-b74b-a55cc0681163",
+          "title": "Introducing 'License type' profile field (AWS) - 25.04",
+          "reason": "The document discusses a 'License type' profile field feature, which does not seem to be related to the query about 'benefits'. The relevance to the query is ambiguous. The document does not mention a specific year, so recency cannot be determined. The title is valid, but the content does not match the user's query or specified location.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        },
+        {
+          "doc_id": "backyard_result18_65bfef26-f782-42e6-b3ab-3f798713b94c",
+          "title": "U.S. leave laws & benefits",
+          "reason": "The document is about U.S. leave laws and benefits, which is not relevant to the user's location (India). The document does not provide any information about benefits in India. The title is valid but not meaningful to the user's query and location. The content is not current or comprehensive for the user's needs.",
+          "confidence": "high",
+          "labeled_by": "LabelingAgent"
+        }
+      ]
+    },
+    "filtered_documents": [
+      {
+        "doc_id": "backyard_result4_b5eb25e7-5517-40b2-a8e9-fd09266bf42d",
+        "title": "U.S. Benefits Enrollment | All you need to know",
+        "reason": "The document is specifically about U.S. Benefits Enrollment, which is not relevant for the user's location (India).",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result10_d3bcc20e-7690-41b5-a78e-1aab7272a991",
+        "title": "W-8BEN-E for entities",
+        "reason": "The document titled 'W-8BEN-E for entities' is a tax form for foreign entities, which is not related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result14_4e8e855e-2ae4-411c-901d-32cc977ce178",
+        "title": "2025 Simpplr UK Employee Handbook",
+        "reason": "The document is a UK Employee Handbook, which is not relevant for the user's location (India).",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result15_efa20afc-5f97-4486-b32c-717b81be79c9",
+        "title": "CSMs _ AMs Employee Experience Excellence Awards",
+        "reason": "The document is about Employee Experience Excellence Awards, which is not directly related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result16_e861ab22-da2c-4da2-b2fd-73d3fa18dfe7",
+        "title": "employee-communications-report-2025",
+        "reason": "The document is about employee communications, which is not directly related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result21_4cb02b1c-6b7e-4ed2-bb9f-ef869beb0acf",
+        "title": "Introducing Feed 2.0: A Major Performance Upgrade to Your Feed Experience",
+        "reason": "The document is about a software upgrade (Feed 2.0), which is not related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result24_459a8490-90ea-4cbe-9abc-138c79869961",
+        "title": "Employee Engagement Summit 2025 [London]",
+        "reason": "The document is about an Employee Engagement Summit in London, which is not relevant for the user's location (India).",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result26_887c37db-6e6a-441b-8ae8-3f71ff190e73",
+        "title": "2023 Simpplr Canada Employee Handbook",
+        "reason": "The document is a Canada Employee Handbook, which is not relevant for the user's location (India).",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result27_9d9dea0e-d526-4ae7-9013-9304a597f6d4",
+        "title": "2024 International vendor - W-8BEN-E form",
+        "reason": "The document titled '2024 International vendor - W-8BEN-E form' is a tax form for foreign entities, which is not related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result29_700a1f4a-0c45-42b0-8669-4a67d09a170a",
+        "title": "W-8BEN for individuals",
+        "reason": "The document is about a software feature (License type profile field), which is not related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      },
+      {
+        "doc_id": "backyard_result32_f260c249-3ec0-4763-9eda-f9dfa2b56034",
+        "title": "Audience enhancements (AWS) - 25.04",
+        "reason": "The document is about a software feature (Audience enhancements), which is not related to the query 'benefits'.",
+        "confidence": "high",
+        "labeled_by": "FilterAgent"
+      }
+    ]
+  }
+}
