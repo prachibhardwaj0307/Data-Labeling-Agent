@@ -17,7 +17,7 @@ from agents import (
 )
 
 st.set_page_config(
-    page_title="Document Labeling - Complete Workflow",
+    page_title="Data Lableing Agent",
     page_icon="🏷️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -393,7 +393,7 @@ def display_final_results(output):
 def main():
     """Main Streamlit app"""
     
-    st.markdown("<h1 class='main-header'>🏷️ Document Labeling System<br>Complete Workflow View</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>🏷️ Data Labeling Agent</h1>", unsafe_allow_html=True)
     
     with st.sidebar:
         st.header("⚙️ Configuration")
