@@ -1,5 +1,5 @@
 """
-Relabel Agent - Relabels documents based on reviewer feedback using LLM
+Relabel Agent - Relabels problematic documents with TOP 10 RELEVANT enforcement
 """
 from typing import Dict, List
 import json
@@ -9,8 +9,8 @@ from utils.llm_client import LLMClient
 
 class RelabelAgent:
     """
-    Agent responsible for relabeling documents when initial labels are rejected
-    Uses LLM to address reviewer feedback and create improved labels
+    Agent responsible for relabeling documents that failed review
+    Enforces maximum 10 RELEVANT documents rule
     """
     
     def __init__(self):
@@ -18,193 +18,222 @@ class RelabelAgent:
         self.logger = Logger()
         self.llm = LLMClient()
         
-        # Define the system prompt
-        self.system_prompt = """You are a Relabeling Agent specialized in improving document labels based on reviewer feedback.
+        self.system_prompt = """You are a Relabeling Agent specialized in correcting document labels.
 
-Your role is to:
-1. Analyze the reviewer's feedback about current labeling decisions
-2. Identify specific problems with labels and reasoning
-3. Create IMPROVED labels with better, more detailed reasoning
-4. Ensure labels are more accurate and well-justified than before
+**CRITICAL RULE: MAXIMUM 10 RELEVANT DOCUMENTS**
 
-LABEL CATEGORIES:
-- **RELEVANT**: Directly answers the query with current, comprehensive information
-  - Contains exactly what the user asked for
-  - Information is up-to-date (2024-2025)
-  - Comprehensive and complete
+When you have more than 10 RELEVANT documents, you must:
+1. Rank ALL relevant documents by these criteria (most important first):
+   - **Recency**: 2024-2025 documents rank highest
+   - **Completeness**: Comprehensive, detailed coverage
+   - **Direct Match**: Directly answers the query (not tangential)
+   - **Quality**: Authoritative, well-written information
+   - **Location Match**: Exact location match preferred
 
-- **SOMEWHAT_RELEVANT**: Partially addresses query OR good content but older/incomplete
-  - Provides some useful information but not everything
-  - May be from 2021-2023 (older but still valuable)
-  - Related but doesn't fully answer the query
+2. Select TOP 10 as RELEVANT
+3. Downgrade remaining to SOMEWHAT_RELEVANT
 
-- **ACCEPTABLE**: Related but limited value OR older documents providing context
-  - Tangentially related to the query
-  - Background or contextual information only
-  - Older documents (pre-2021) that provide historical context
+Be objective and justify your rankings clearly."""
 
-- **NOT_SURE**: Missing title, no link, unclear content, or ambiguous relevance
-  - Document has structural issues (no title, broken link)
-  - Cannot determine relevance with confidence
-  - Content is too vague or unclear
-
-COMMON ISSUES TO FIX:
-- Generic reasoning → Make it specific with details
-- Wrong confidence level → Adjust based on evidence
-- Unclear label choice → Choose more appropriate label
-- Missing details → Add document year, specific content mentions
-- Vague descriptions → Be explicit about why the label fits
-
-IMPROVEMENT STRATEGIES:
-- Mention specific year/date if found
-- Quote or reference specific content from the document
-- Explain exactly why it does/doesn't answer the query
-- Be explicit about document quality and completeness
-- Justify confidence level with evidence
-
-You must show substantial improvement over the previous label."""
-
-    def relabel_documents(self, labeling_results: Dict[str, List[LabelingDecision]], 
-                         review: LabelReviewDecision,
-                         query: str,
-                         location: str = "") -> Dict[str, List[LabelingDecision]]:
+    def relabel_documents(self, current_labels: Dict[str, List[LabelingDecision]], 
+                         review: LabelReviewDecision, query: str, location: str) -> Dict[str, List[LabelingDecision]]:
         """
-        Relabel documents based on reviewer feedback using LLM
+        Relabel documents based on review feedback with TOP 10 enforcement
+        """
+        self.logger.log(self.name, 
+            f"Relabeling based on review: {review.feedback[:100]}...")
         
-        Args:
-            labeling_results: Current labeling results that were rejected
-            review: Review decision with feedback
-            query: User's search query
-            location: User's location (optional)
+        # Get relevant documents count
+        relevant_docs = current_labels.get("relevant", [])
+        relevant_count = len(relevant_docs)
+        
+        self.logger.log(self.name, f"Current RELEVANT count: {relevant_count}")
+        
+        # Check if this is a "too many relevant" issue
+        if relevant_count > 10:
+            self.logger.log(self.name, 
+                f"⚠️ RELEVANT OVERFLOW DETECTED: {relevant_count} > 10")
+            self.logger.log(self.name, "Initiating TOP 10 selection process...")
             
-        Returns:
-            Improved labeling results dictionary
+            return self._select_top_10_relevant(current_labels, query, location, relevant_docs)
+        else:
+            self.logger.log(self.name, "No overflow issue, returning current labels")
+            return current_labels
+    
+    def _select_top_10_relevant(self, current_labels: Dict[str, List[LabelingDecision]], 
+                               query: str, location: str, 
+                               relevant_docs: List[LabelingDecision]) -> Dict[str, List[LabelingDecision]]:
         """
-        self.logger.log(self.name, 
-            f"Relabeling attempt #{review.attempt_number + 1} based on feedback")
-        self.logger.log(self.name, f"Reviewer feedback: {review.feedback}")
-        self.logger.log(self.name, 
-            f"Documents to relabel: {len(review.rejected_docs)}")
+        Select TOP 10 RELEVANT documents and downgrade the rest
+        """
+        self.logger.log(self.name, f"Selecting TOP 10 from {len(relevant_docs)} RELEVANT documents")
         
-        # Get all documents that need relabeling
-        docs_to_relabel = []
-        doc_current_info = {}
+        # Prepare data for ranking
+        docs_for_ranking = []
+        for idx, decision in enumerate(relevant_docs, 1):
+            docs_for_ranking.append({
+                "doc_id": decision.doc_id,
+                "current_reason": decision.reason,
+                "confidence": decision.confidence,
+                "index": idx
+            })
         
-        for label, decisions in labeling_results.items():
-            for decision in decisions:
-                if decision.doc_id in review.rejected_docs:
-                    docs_to_relabel.append({
-                        "doc_id": decision.doc_id,
-                        "current_label": label,
-                        "current_reason": decision.reason,
-                        "current_confidence": decision.confidence
-                    })
-                    doc_current_info[decision.doc_id] = (label, decision)
-        
-        if not docs_to_relabel:
-            self.logger.log(self.name, "No documents to relabel")
-            return labeling_results
-        
-        # Create the user prompt
-        user_prompt = f"""RELABELING TASK:
+        user_prompt = f"""URGENT TASK: Select TOP 10 RELEVANT documents from {len(relevant_docs)} candidates.
 
 Query: "{query}"
-Location: {location if location else "Not specified"}
+User Location: "{location}"
 
-REVIEWER FEEDBACK (MUST ADDRESS): {review.feedback}
-Current Attempt: {review.attempt_number + 1} of 3
+Current RELEVANT documents (MUST select only TOP 10):
+{json.dumps(docs_for_ranking, indent=2)}
 
-DOCUMENTS TO RELABEL (problematic labels):
-{json.dumps(docs_to_relabel, indent=2)}
+RANKING CRITERIA (Priority Order):
+1. **Recency** - Newer is better (2024-2025 highest priority)
+2. **Completeness** - Comprehensive coverage of "{query}"
+3. **Direct Query Match** - Directly answers "{query}" (not tangential)
+4. **Information Quality** - Detailed, authoritative content
+5. **Location Match** - Matches "{location}" exactly
 
-TASK:
-Based on the reviewer's feedback, provide IMPROVED labels for these documents.
+TASK: Carefully analyze the reasons and select the BEST 10 documents.
 
-For each document:
-1. Analyze why the previous label was problematic
-2. Choose a better label
-3. Provide detailed, specific reasoning (not generic)
-4. Justify your confidence level
-
-OUTPUT FORMAT (JSON):
+Respond in JSON format:
 {{
-    "analysis_of_feedback": "What issues did the reviewer find with these labels?",
-    "relabeled": [
+    "top_10_relevant": [
         {{
-            "doc_id": "document_id",
-            "new_label": "RELEVANT|SOMEWHAT_RELEVANT|ACCEPTABLE|NOT_SURE",
-            "new_reason": "Detailed, specific reason - mention document year, specific content, why it matches the query or doesn't",
-            "confidence": "high|medium|low",
-            "what_was_improved": "Explain what's better about this label vs. the previous one"
-        }}
-    ]
+            "doc_id": "id1",
+            "rank": 1,
+            "selection_reason": "Why this is #1: [mention recency, completeness, direct match]"
+        }},
+        {{
+            "doc_id": "id2",
+            "rank": 2,
+            "selection_reason": "Why this is #2: [specific reasons]"
+        }},
+        ... (exactly 10 documents)
+    ],
+    "downgraded_to_somewhat": [
+        {{
+            "doc_id": "id11",
+            "downgrade_reason": "Why NOT in top 10: [e.g., older, less comprehensive, tangential]"
+        }},
+        ... (remaining {len(relevant_docs) - 10} documents)
+    ],
+    "ranking_methodology": "Brief explanation of your overall selection criteria"
 }}
 
-REQUIREMENTS:
-- Address the reviewer's specific concerns
-- Provide MORE DETAILED reasoning than before
-- Be specific (mention years, content details, etc.)
-- Explain why the document does/doesn't answer "{query}"
-- Avoid generic phrases like "relates to query" - be explicit!"""
+CRITICAL: You MUST return exactly 10 documents in top_10_relevant and {len(relevant_docs) - 10} in downgraded_to_somewhat."""
 
         try:
-            # Call LLM and get structured response
+            self.logger.log(self.name, "Calling LLM for TOP 10 selection...")
             response = self.llm.call_with_json_response(self.system_prompt, user_prompt)
             
-            # Log analysis
-            analysis = response.get("analysis_of_feedback", "No analysis provided")
-            self.logger.log(self.name, f"Analysis: {analysis}")
+            top_10_list = response.get("top_10_relevant", [])
+            downgrade_list = response.get("downgraded_to_somewhat", [])
+            methodology = response.get("ranking_methodology", "No methodology provided")
             
-            # Create new results dict (copy existing)
-            new_results = {
-                "relevant": labeling_results.get("relevant", []).copy(),
-                "somewhat_relevant": labeling_results.get("somewhat_relevant", []).copy(),
-                "acceptable": labeling_results.get("acceptable", []).copy(),
-                "not_sure": labeling_results.get("not_sure", []).copy()
+            self.logger.log(self.name, f"LLM selected {len(top_10_list)} for TOP 10")
+            self.logger.log(self.name, f"LLM selected {len(downgrade_list)} to downgrade")
+            self.logger.log(self.name, f"Methodology: {methodology}")
+            
+            # Validate we got the right counts
+            if len(top_10_list) != 10:
+                self.logger.log(self.name, 
+                    f"⚠️ WARNING: Expected 10, got {len(top_10_list)}. Adjusting...", "WARNING")
+                top_10_list = top_10_list[:10]  # Take first 10
+            
+            # Create document map
+            doc_map = {d.doc_id: d for d in relevant_docs}
+            
+            # Build new labels dictionary
+            new_labels = {
+                "relevant": [],
+                "somewhat_relevant": list(current_labels.get("somewhat_relevant", [])),
+                "acceptable": list(current_labels.get("acceptable", [])),
+                "not_sure": list(current_labels.get("not_sure", []))
             }
             
-            # Process relabeled documents
-            for relabeled in response.get("relabeled", []):
-                doc_id = relabeled.get("doc_id")
-                new_label = relabeled.get("new_label", "NOT_SURE").lower()
+            # Add TOP 10 to RELEVANT
+            for item in top_10_list:
+                doc_id = item.get("doc_id")
+                rank = item.get("rank", 0)
+                reason = item.get("selection_reason", "Selected as top 10")
                 
-                # Validate label
-                if new_label not in ["relevant", "somewhat_relevant", "acceptable", "not_sure"]:
-                    new_label = "not_sure"
+                if doc_id in doc_map:
+                    original = doc_map[doc_id]
+                    new_decision = LabelingDecision(
+                        doc_id=doc_id,
+                        label="relevant",
+                        reason=f"[🏆 TOP 10 - Rank #{rank}] {reason}",
+                        confidence="high",
+                        agent_name=self.name
+                    )
+                    new_labels["relevant"].append(new_decision)
+                    self.logger.log(self.name, f"  ✅ Rank {rank}: {doc_id}")
+            
+            # Downgrade rest to SOMEWHAT_RELEVANT
+            for item in downgrade_list:
+                doc_id = item.get("doc_id")
+                reason = item.get("downgrade_reason", "Not in top 10")
                 
-                # Remove from old label category
-                if doc_id in doc_current_info:
-                    old_label, old_decision = doc_current_info[doc_id]
-                    new_results[old_label] = [
-                        d for d in new_results[old_label] if d.doc_id != doc_id
-                    ]
-                
-                # Add to new label category
-                new_decision = LabelingDecision(
-                    doc_id=doc_id,
-                    label=new_label,
-                    reason=relabeled.get("new_reason", "Relabeled based on feedback"),
-                    confidence=relabeled.get("confidence", "medium"),
-                    agent_name=self.name
-                )
-                
-                new_results[new_label].append(new_decision)
-                
-                improvement = relabeled.get("what_was_improved", "")
-                self.logger.log_decision(
-                    self.name,
-                    doc_id,
-                    f"{new_label.upper()} (relabeled from {doc_current_info[doc_id][0]})",
-                    f"{new_decision.reason}\n  Improvement: {improvement}"
-                )
+                if doc_id in doc_map:
+                    new_decision = LabelingDecision(
+                        doc_id=doc_id,
+                        label="somewhat_relevant",
+                        reason=f"[⬇️ DOWNGRADED FROM RELEVANT] {reason}",
+                        confidence="medium",
+                        agent_name=self.name
+                    )
+                    new_labels["somewhat_relevant"].append(new_decision)
+                    self.logger.log(self.name, f"  ⬇️ Downgraded: {doc_id}")
             
             self.logger.log(self.name, 
-                f"Relabeling complete: {len(response.get('relabeled', []))} documents relabeled")
-            return new_results
+                f"✅ Relabeling complete: {len(new_labels['relevant'])} RELEVANT, "
+                f"{len(new_labels['somewhat_relevant'])} SOMEWHAT_RELEVANT")
+            
+            return new_labels
             
         except Exception as e:
-            # Fallback: return original labels
             self.logger.log(self.name, 
-                          f"⚠️ LLM relabeling failed: {e}. Keeping original labels.", 
-                          "WARNING")
-            return labeling_results
+                f"❌ LLM relabeling failed: {e}. Using fallback.", "ERROR")
+            
+            # FALLBACK: Keep first 10 by confidence, downgrade rest
+            self.logger.log(self.name, "Using fallback: keeping first 10 by confidence")
+            
+            # Sort by confidence (high > medium > low)
+            confidence_order = {"high": 3, "medium": 2, "low": 1}
+            sorted_docs = sorted(relevant_docs, 
+                               key=lambda x: confidence_order.get(x.confidence, 0), 
+                               reverse=True)
+            
+            new_labels = {
+                "relevant": [],
+                "somewhat_relevant": list(current_labels.get("somewhat_relevant", [])),
+                "acceptable": list(current_labels.get("acceptable", [])),
+                "not_sure": list(current_labels.get("not_sure", []))
+            }
+            
+            # Keep top 10
+            for i, doc in enumerate(sorted_docs[:10], 1):
+                new_decision = LabelingDecision(
+                    doc_id=doc.doc_id,
+                    label="relevant",
+                    reason=f"[TOP 10 by confidence - #{i}] {doc.reason}",
+                    confidence=doc.confidence,
+                    agent_name=self.name
+                )
+                new_labels["relevant"].append(new_decision)
+            
+            # Downgrade rest
+            for doc in sorted_docs[10:]:
+                new_decision = LabelingDecision(
+                    doc_id=doc.doc_id,
+                    label="somewhat_relevant",
+                    reason=f"[DOWNGRADED - not in top 10 by confidence] {doc.reason}",
+                    confidence="medium",
+                    agent_name=self.name
+                )
+                new_labels["somewhat_relevant"].append(new_decision)
+            
+            self.logger.log(self.name, 
+                f"Fallback complete: {len(new_labels['relevant'])} RELEVANT")
+            
+            return new_labels
