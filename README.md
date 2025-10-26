@@ -180,6 +180,11 @@ document-labeling-system/
 - Checks names, themes, coherence  
 - Accepts single-document groups if justified  
 
+### RegroupAgent
+- Reorganizes groups based on feedback  
+- Improves group names and themes  
+
+
 ### LabelingAgent
 - Labels entire groups  
 - Year-aware: 2025 = RELEVANT, older = SOMEWHAT_RELEVANT  
@@ -189,10 +194,6 @@ document-labeling-system/
 - Enforces maximum 10 RELEVANT documents rule  
 - Checks label accuracy and consistency  
 - Triggers relabeling if needed  
-
-### RegroupAgent
-- Reorganizes groups based on feedback  
-- Improves group names and themes  
 
 ### RelabelAgent
 - Selects **TOP 10** most relevant documents  
