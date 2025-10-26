@@ -18,7 +18,7 @@ An intelligent document classification system using multiple AI agents to automa
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/document-labeling-system.git
+git clone https://github.com/prachibhardwaj0307/Data-Labeling-Agent
 cd document-labeling-system
 ```
 
@@ -103,30 +103,6 @@ Then open your browser to [http://localhost:8501](http://localhost:8501)
 
 ---
 
-## 🧾 Input Data Format
-
-**input_data.json**
-```json
-[
-  {
-    "id": 1,
-    "data": {
-      "items": [
-        {
-          "id": "doc_1",
-          "title": "Employee Benefits 2025",
-          "html": "<p>Document content...</p>"
-        }
-      ],
-      "text": "employee benefits",
-      "location": "India"
-    }
-  }
-]
-```
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -149,7 +125,6 @@ document-labeling-system/
 ├── config.py
 ├── main.py
 ├── streamlit_app.py
-├── input_data.json
 ├── requirements.txt
 ├── .env
 └── README.md
@@ -252,31 +227,9 @@ python-dotenv>=1.0.0
 
 ---
 
-## 📄 License
-
-MIT License – See `LICENSE` file for details.
-
----
-
 ## 📧 Contact
 
-**GitHub:** [https://github.com/yourusername/document-labeling-system](https://github.com/yourusername/document-labeling-system)
-
----
-
-## ❓ FAQ
-
-### Q: How many documents can I process?
-- 100+ efficiently; depends on document size  
-
-### Q: Why limit to 10 RELEVANT?
-- Ensures only top-quality documents are marked RELEVANT  
-
-### Q: Can I customize label categories?
-- Yes — edit `config.py` → `LABEL_CRITERIA`  
-
-### Q: Can I use Claude instead of GPT-4?
-- Yes — set `LLM_PROVIDER = "anthropic"` in `config.py`  
+**GitHub:** [https://github.com/prachibhardwaj0307/Data-Labeling-Agent]https://github.com/prachibhardwaj0307/Data-Labeling-Agent)
 
 ---
 
