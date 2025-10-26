@@ -230,7 +230,7 @@ python-dotenv>=1.0.0
 
 ## 📧 Contact
 
-**GitHub:** [https://github.com/prachibhardwaj0307/Data-Labeling-Agent]https://github.com/prachibhardwaj0307/Data-Labeling-Agent)
+**GitHub:** [https://github.com/prachibhardwaj0307/Data-Labeling-Agent](https://github.com/prachibhardwaj0307/Data-Labeling-Agent)
 
 ---
 
