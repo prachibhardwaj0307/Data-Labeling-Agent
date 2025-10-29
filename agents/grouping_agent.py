@@ -1,16 +1,17 @@
 """
-Grouping Agent - Clusters similar documents using LLM
+Grouping Agent - Groups documents by similarity AND year
 """
 from typing import List
 import json
+import re
 from models.data_models import Document, DocumentGroup
 from utils.helpers import Logger, extract_text_from_html
 from utils.llm_client import LLMClient
 
 class GroupingAgent:
     """
-    Agent responsible for grouping similar documents for efficient batch labeling
-    Uses LLM to identify themes and create meaningful groups
+    Agent responsible for grouping similar documents
+    Groups by topic AND year for recency-aware organization
     """
     
     def __init__(self):
@@ -18,175 +19,163 @@ class GroupingAgent:
         self.logger = Logger()
         self.llm = LLMClient()
         
-        # Define the system prompt
-        # self.system_prompt = """You are a Document Grouping Agent specialized in clustering similar documents for efficient batch processing.
-        self.system_prompt = """You are a Document Grouping Agent specialized in clustering similar documents for efficient batch processing.
+        self.system_prompt = """You are a Document Grouping Agent specialized in clustering similar documents.
+
+**CRITICAL: GROUP BY TOPIC AND YEAR - SEPARATE GROUPS FOR DIFFERENT YEARS**
 
 Your role is to:
-1. Analyze document titles and content to identify themes
-2. Identify common topics, document types, or purposes
-3. Group similar documents together for batch labeling
-4. Create clear, descriptive group names and themes
-5. Ensure groups are appropriately sized for efficient processing
+1. Identify document topics and themes
+2. Extract year/date information from titles and content
+3. **CREATE SEPARATE GROUPS FOR EACH YEAR** within the same topic
+4. Prioritize recent documents (2024-2025)
 
-GROUPING GUIDELINES:
-- Group documents with similar topics, themes, or document types
-- Ideal group size: 3-7 documents (minimum 1, maximum 10)
-- Single-document groups are ALLOWED if the document is unique
-- Documents about the same topic but different locations CAN be grouped together
-- Documents of the same type (handbooks, policies, presentations) CAN be grouped
-- Create clear, meaningful group names (e.g., "Employee Benefits Documents", "India-specific Policies")
-- Identify the common theme that connects documents in each group
+GROUPING STRATEGY:
+- Primary: Group by TOPIC (benefits, holidays, policies, etc.)
+- Secondary: **SEPARATE BY YEAR** within topics (THIS IS CRITICAL)
+- Example: If you have 5 "Benefits" documents:
+  - 3 from 2025 → "Employee Benefits 2025" (separate group)
+  - 2 from 2024 → "Employee Benefits 2024" (separate group)
+  - NOT: "Employee Benefits" (mixed years - WRONG)
 
-GROUPING STRATEGIES:
-- By topic: Benefits, holidays, policies, handbooks, etc.
-- By document type: Presentations, handbooks, forms, etc.
-- By region: India-specific, US-specific, UK-specific, Global
-- By recency: 2025 documents, 2024 documents, older documents
-- By audience: Employees, managers, HR, etc.
+YEAR DETECTION:
+- Look for years in titles: "2025", "2024", "2023", etc.
+- Look for dates: "Jan 2025", "December 2024", etc.
+- If no year found, mark as "Undated" but try to infer from content
+
+GROUP NAMING CONVENTION (MANDATORY):
+- **ALWAYS use format: "[Topic] [Year]"**
+- Examples: "India Benefits 2025", "US Holidays 2024", "UK Policies 2023"
+- Never mix years in one group
+- If multiple years exist for a topic → Create multiple groups
 
 QUALITY REQUIREMENTS:
-- Every document MUST be assigned to exactly ONE group
-- Single-document groups are acceptable for unique documents
-- No empty groups allowed
-- Group names must be descriptive and meaningful
-- Themes must clearly explain what connects the documents
+- Groups can have 1-10 documents
+- Each group MUST have clear year identification in name
+- **DO NOT mix 2025 docs with 2024 docs**
+- Provide reasoning for year-based grouping
 
-Provide detailed reasoning for your grouping decisions."""
-
+This year-based grouping is CRITICAL for downstream labeling where 2025 = RELEVANT and older = SOMEWHAT_RELEVANT."""
 
     def group_documents(self, documents: List[Document], query: str) -> List[DocumentGroup]:
         """
-        Group similar documents using LLM analysis
-        
-        Args:
-            documents: List of Document objects to group
-            query: User's search query for context
-            
-        Returns:
-            List of DocumentGroup objects
+        Group documents by topic and year
         """
-        self.logger.log(self.name, f"Grouping {len(documents)} documents using LLM")
-        self.logger.log(self.name, f"Query context: '{query}'")
+        self.logger.log(self.name, f"Grouping {len(documents)} documents by topic AND YEAR")
         
         if not documents:
             return []
         
-        # If only 1-2 documents, create a single group
-        if len(documents) <= 2:
-            self.logger.log(self.name, "Only 1-2 documents, creating single group")
-            return [DocumentGroup(
-                name="All_Documents",
-                documents=documents,
-                theme=f"Documents related to '{query}'",
-                reasons=["Small document set - grouped together"]
-            )]
-        
-        # Prepare document data for LLM
+        # Prepare document data with year extraction
         docs_data = []
         for doc in documents:
-            content_preview = extract_text_from_html(doc.html)[:600]  # First 600 chars
+            content = extract_text_from_html(doc.html)[:500]
+            
+            # Extract year from title or content
+            year = self._extract_year(doc.title, content)
+            
             docs_data.append({
                 "id": doc.id,
                 "title": doc.title,
-                "content_preview": content_preview
+                "content_preview": content,
+                "detected_year": year
             })
         
-        # Create the user prompt
-        user_prompt = f"""GROUPING TASK:
+        user_prompt = f"""GROUPING TASK WITH YEAR SEPARATION:
 
 Query: "{query}"
 
 Documents to Group ({len(documents)} total):
 {json.dumps(docs_data, indent=2)}
 
-TASK:
-Analyze these documents and create meaningful groups based on similarity, theme, or topic.
+**CRITICAL INSTRUCTION: GROUP BY TOPIC AND YEAR**
 
-Consider:
-- Document topics and content
-- Document types (handbook, policy, presentation, etc.)
-- Geographic regions mentioned (India, US, UK, Global)
-- Document recency (year mentioned in title/content)
-- Audience or purpose
+For each document:
+1. Check "detected_year" field
+2. Identify the topic
+3. Create SEPARATE groups for EACH YEAR of the same topic
+
+Example: If you have "Benefits" docs from 2025, 2024, 2023:
+- Create 3 groups:
+  - "India Benefits 2025" (most recent)
+  - "India Benefits 2024" (previous year)
+  - "India Benefits 2023" (older)
+
+GROUP NAMING RULES:
+- Use format: "[Topic] [Year]"
+- Examples: "Employee Benefits 2025", "Holiday Calendar 2024", "Policies 2023"
+- For undated docs: "[Topic] (Undated)" or "[Topic] (Unknown Year)"
+- NEVER mix years in one group
 
 OUTPUT FORMAT (JSON):
 {{
     "groups": [
         {{
-            "group_name": "Clear, descriptive name (e.g., 'India Employee Benefits', 'US Handbooks 2025')",
-            "theme": "Detailed explanation of what connects these documents",
-            "document_ids": ["doc_id1", "doc_id2", "doc_id3"],
-            "reasoning": "Why these specific documents belong together"
+            "group_name": "Clear name with YEAR (e.g., 'India Benefits 2025')",
+            "theme": "Description including year/recency information",
+            "document_ids": ["doc_id1", "doc_id2"],
+            "year": "2025/2024/2023/Unknown",
+            "reasoning": "Why these docs grouped together, emphasizing year separation"
         }}
     ],
-    "grouping_strategy": "Explain your overall grouping approach"
+    "grouping_strategy": "Explain your year-based grouping approach"
 }}
 
 REQUIREMENTS:
-- Create 1-10 documents per group (ideal: 3-7)
-- SINGLE-DOCUMENT groups are ACCEPTABLE for unique documents
-- Every document must be assigned to exactly ONE group
-- Group names must be descriptive and unique
-- Aim for {max(1, len(documents) // 5)} to {len(documents) // 2} groups total"""
+- **Separate groups by year when possible**
+- Prioritize identifying recent (2024-2025) documents
+- Clear year labels in ALL group names
+- 1-10 documents per group"""
 
         try:
-            # Call LLM and get structured response
             response = self.llm.call_with_json_response(self.system_prompt, user_prompt)
             
+            groups_data = response.get("groups", [])
             groups = []
-            doc_map = {doc.id: doc for doc in documents}
-            assigned_docs = set()
             
-            # Process each group from LLM response
-            for group_data in response.get("groups", []):
+            doc_map = {doc.id: doc for doc in documents}
+            
+            for group_data in groups_data:
                 group_docs = []
                 for doc_id in group_data.get("document_ids", []):
-                    if doc_id in doc_map and doc_id not in assigned_docs:
+                    if doc_id in doc_map:
                         group_docs.append(doc_map[doc_id])
-                        assigned_docs.add(doc_id)
                 
                 if group_docs:
                     group = DocumentGroup(
-                        name=group_data.get("group_name", f"Group_{len(groups)+1}"),
+                        name=group_data.get("group_name", "Unnamed Group"),
                         documents=group_docs,
-                        theme=group_data.get("theme", "No theme provided"),
-                        reasons=[group_data.get("reasoning", "No reasoning provided")]
+                        theme=group_data.get("theme", "No theme"),
+                        reasons=[group_data.get("reasoning", "No reasoning")]
                     )
                     groups.append(group)
                     
+                    year = group_data.get("year", "Unknown")
                     self.logger.log(self.name, 
-                        f"✓ Created group '{group.name}' with {len(group_docs)} documents")
-                    self.logger.log(self.name, f"  Theme: {group.theme}")
+                        f"Created group '{group.name}' with {len(group_docs)} docs (Year: {year})")
             
-            # Handle any unassigned documents
-            unassigned = [doc for doc in documents if doc.id not in assigned_docs]
-            if unassigned:
-                self.logger.log(self.name, 
-                    f"⚠️ Found {len(unassigned)} unassigned documents, creating additional group")
-                group = DocumentGroup(
-                    name="Additional_Documents",
-                    documents=unassigned,
-                    theme="Documents not assigned to primary groups",
-                    reasons=["Documents that didn't fit into main thematic groups"]
-                )
-                groups.append(group)
-            
-            # Log summary
-            strategy = response.get("grouping_strategy", "No strategy provided")
-            self.logger.log(self.name, f"Grouping complete: Created {len(groups)} groups")
-            self.logger.log(self.name, f"Strategy: {strategy}")
-            
+            self.logger.log(self.name, f"Created {len(groups)} year-aware groups")
             return groups
             
         except Exception as e:
-            # Fallback: create a single group with all documents
-            self.logger.log(self.name, 
-                          f"⚠️ LLM grouping failed: {e}. Creating single group as fallback.", 
-                          "WARNING")
+            self.logger.log(self.name, f"LLM grouping failed: {e}", "ERROR")
+            
+            # Fallback: Create single group
             return [DocumentGroup(
-                name="All_Documents",
+                name="All Documents",
                 documents=documents,
-                theme=f"All documents related to '{query}'",
-                reasons=[f"Fallback grouping due to LLM error: {str(e)[:100]}"]
+                theme="Fallback grouping due to error",
+                reasons=["Grouped due to LLM error"]
             )]
+    
+    def _extract_year(self, title: str, content: str) -> str:
+        """Extract year from title or content"""
+        text = f"{title} {content}"
+        
+        # Look for 4-digit years (2020-2030)
+        years = re.findall(r'\b(202[0-9]|203[0])\b', text)
+        
+        if years:
+            # Return most recent year found
+            return max(years)
+        
+        return "Unknown"

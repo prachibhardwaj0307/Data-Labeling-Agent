@@ -1,5 +1,5 @@
 """
-Filter Agent - Removes clearly irrelevant documents using LLM
+Filter Agent - Removes irrelevant documents from NEW documents only
 """
 from typing import List, Tuple, Dict
 import json
@@ -9,8 +9,8 @@ from utils.llm_client import LLMClient
 
 class FilterAgent:
     """
-    Agent responsible for filtering out clearly irrelevant documents
-    Uses LLM to make intelligent filtering decisions
+    Agent responsible for filtering out clearly irrelevant NEW documents
+    Preserves already-labeled documents
     """
     
     def __init__(self):
@@ -18,144 +18,143 @@ class FilterAgent:
         self.logger = Logger()
         self.llm = LLMClient()
         
-        # Define the system prompt that guides the LLM's behavior
-        self.system_prompt = """You are a Document Filter Agent specialized in identifying clearly irrelevant documents.
+        self.system_prompt = """You are a Document Filtering Agent specialized in identifying irrelevant documents.
 
-Your role is to analyze documents and filter out those that are:
-1. Missing valid titles (title is empty, "No Title", "Holiday Balance", or clearly placeholder text)
-2. Missing proper links or meaningful content
-3. Completely unrelated to the user's query
-4. Technical/system documents with no user-facing value
-5. Broken or malformed documents
+**YOUR ROLE:** Remove ONLY clearly irrelevant documents from NEW unlabeled documents.
 
-CRITICAL FILTERING RULES:
-- Only filter out documents that are CLEARLY and OBVIOUSLY irrelevant
-- When in doubt about relevance, KEEP the document (let other agents decide)
-- Check if the title provides meaningful information
-- Verify that content exists and is substantive
-- Consider query keywords and document topic alignment
-- Location-specific documents should only be filtered if they're for completely different locations
+**IMPORTANT:** 
+- You are filtering NEW documents only
+- These documents will be compared to already-labeled examples later
+- Be conservative - when in doubt, KEEP the document
 
-IMPORTANT: You are the first line of defense. Be conservative - it's better to keep a marginally relevant document than to filter out something potentially useful.
+**FILTERING CRITERIA:**
 
-You must provide clear, specific reasoning for EVERY filtering decision."""
+FILTER OUT (Irrelevant):
+- Completely unrelated to query topic
+- Wrong domain entirely (e.g., technical docs when query is about benefits)
+- Spam or invalid content
+- Empty or "No Title" with no content
 
-    def filter_documents(self, documents: List[Document], query: str, location: str = "") -> Tuple[List[Document], List[Document], Dict[str, str]]:
+KEEP:
+- Documents answering query (even if different location)
+- Documents with partial relevance
+- Documents that might be context-relevant
+- Older versions of relevant documents
+- When uncertain, KEEP
+
+**SPECIAL RULES:**
+- Wrong location but correct topic → KEEP (will be labeled ACCEPTABLE later)
+- Older year but relevant topic → KEEP (will be labeled SOMEWHAT_RELEVANT later)
+- Missing title but has content → KEEP (will be labeled NOT_SURE later)
+
+Provide clear reasoning for each filtered document."""
+
+    def filter_documents(self, documents: List[Document], query: str, 
+                        location: str = "") -> Tuple[List[Document], List[Document], Dict[str, str]]:
         """
-        Filter out clearly irrelevant documents using LLM analysis
+        Filter NEW documents, removing only clearly irrelevant ones
         
-        Args:
-            documents: List of Document objects to filter
-            query: User's search query
-            location: User's location (optional)
-            
         Returns:
-            Tuple of (kept_documents, removed_documents, reasons_dict)
+            - kept_documents: Documents that passed filtering
+            - removed_documents: Documents that were filtered out
+            - filter_reasons: Dictionary mapping doc_id to reason for filtering
         """
-        self.logger.log(self.name, f"Starting LLM-based filtering for {len(documents)} documents")
-        self.logger.log(self.name, f"Query: '{query}', Location: '{location or 'Not specified'}'")
+        self.logger.log(self.name, 
+            f"Filtering {len(documents)} NEW documents for query: '{query}'")
         
         if not documents:
             return [], [], {}
         
-        # Prepare document data for LLM (keeping it concise)
+        # Prepare document data for LLM
         docs_data = []
         for doc in documents:
-            content_preview = extract_text_from_html(doc.html)[:400]  # First 400 chars
+            content = extract_text_from_html(doc.html)[:2000]
             docs_data.append({
                 "id": doc.id,
                 "title": doc.title,
-                "content_preview": content_preview,
-                "has_link": bool("href=" in doc.html)
+                "content_preview": content[:500]  # First 500 chars for preview
             })
         
-        # Create the user prompt with context
-        # In the user_prompt, update the filtering criteria:
-
         user_prompt = f"""FILTERING TASK:
 
 Query: "{query}"
-Location: {location if location else "Not specified (global)"}
+User Location: "{location if location else "Not specified"}"
 
-Documents to Analyze ({len(documents)} total):
+NEW Documents to Filter ({len(documents)} total):
 {json.dumps(docs_data, indent=2)}
 
-TASK:
-Analyze each document and decide which ones should be FILTERED OUT (removed from processing).
-
-**CRITICAL RULES:**
-
-Filter a document ONLY if:
-1. Completely unrelated to the query "{query}" (different topic entirely)
-2. System/technical document with no user value (e.g., raw HTML, error pages)
-3. Clearly for a VERY different location (if user specified location)
-4. Broken or malformed HTML with no content
-
-**DO NOT FILTER:**
-❌ Documents with "No Title" or missing titles → KEEP THESE (mark them NOT_SURE later)
-❌ Documents about same topic but different location → KEEP (mark them ACCEPTABLE later)
-❌ Documents with partial relevance → KEEP
-❌ Older documents about the same topic → KEEP
-
-**LOCATION FILTERING:**
-- Query="{query}", User Location="{location}"
-- Document about "{query}" for US/UK/Canada → **KEEP** (mark ACCEPTABLE later)
-- Document about "{query}" for {location} → **KEEP** (mark RELEVANT/SOMEWHAT_RELEVANT later)
-- Only filter if TOPIC is completely different, not just location
-
-OUTPUT FORMAT (JSON):
-{{
-    "filtered_out": [
-        {{
-            "doc_id": "document_id",
-            "reason": "Specific reason: [Why is this COMPLETELY UNRELATED to '{query}'? Be explicit]"
-        }}
-    ],
-    "kept_documents": ["doc_id1", "doc_id2", ...],
-    "summary": "Brief summary of filtering decisions"
-}}
+**TASK:** Identify ONLY clearly irrelevant documents to filter out.
 
 **REMEMBER:**
-✅ No title → KEEP (don't filter)
-✅ Wrong location but right topic → KEEP (don't filter)
-❌ Only filter if topic is COMPLETELY different"""
+- These are NEW unlabeled documents
+- Be conservative - when in doubt, KEEP
+- Wrong location but correct topic → KEEP
+- Older documents but relevant → KEEP
+- Partial relevance → KEEP
 
+**DECISION CRITERIA:**
+1. Is document completely unrelated to "{query}"?
+2. Is it spam, invalid, or empty content?
+3. Is it wrong domain entirely?
+
+If YES to any above → FILTER OUT
+Otherwise → KEEP
+
+Respond in JSON format:
+{{
+    "keep": [
+        {{
+            "doc_id": "document_id",
+            "reason": "Why keeping this document"
+        }}
+    ],
+    "filter": [
+        {{
+            "doc_id": "document_id",
+            "reason": "Why filtering this document (must be clearly irrelevant)"
+        }}
+    ],
+    "filtering_summary": "Brief summary of filtering decisions"
+}}
+
+**BE CONSERVATIVE:** When uncertain, KEEP the document."""
 
         try:
-            # Call LLM and get structured response
             response = self.llm.call_with_json_response(self.system_prompt, user_prompt)
             
-            # Process the response
-            filtered_out_info = {item["doc_id"]: item["reason"] 
-                               for item in response.get("filtered_out", [])}
-            kept_ids = set(response.get("kept_documents", []))
-            summary = response.get("summary", "No summary provided")
+            keep_list = response.get("keep", [])
+            filter_list = response.get("filter", [])
             
-            filtered = []
-            removed = []
-            removal_reasons = {}  # Store reasons for each removed document
+            # Create sets for quick lookup
+            keep_ids = {item.get("doc_id") for item in keep_list}
+            filter_ids = {item.get("doc_id") for item in filter_list}
             
-            # Classify each document based on LLM decision
+            # Create reason mapping
+            filter_reasons = {
+                item.get("doc_id"): item.get("reason", "No reason provided")
+                for item in filter_list
+            }
+            
+            # Separate documents
+            kept_documents = []
+            removed_documents = []
+            
             for doc in documents:
-                if doc.id in filtered_out_info:
-                    reason = filtered_out_info[doc.id]
-                    self.logger.log(self.name, f"❌ FILTERING OUT {doc.id}: {reason}")
-                    doc.current_label = "irrelevant"  # Mark as irrelevant
-                    removed.append(doc)
-                    removal_reasons[doc.id] = reason  # Store the reason
+                if doc.id in filter_ids:
+                    removed_documents.append(doc)
+                    self.logger.log(self.name, 
+                        f"❌ Filtered: {doc.title[:50]}... | Reason: {filter_reasons.get(doc.id, 'N/A')}")
                 else:
-                    self.logger.log(self.name, f"✓ KEEPING {doc.id}: '{doc.title[:50]}'")
-                    filtered.append(doc)
+                    kept_documents.append(doc)
             
-            # Log summary
-            self.logger.log(self.name, f"Filtering complete: {len(filtered)} kept, {len(removed)} removed")
-            self.logger.log(self.name, f"Summary: {summary}")
+            self.logger.log(self.name, 
+                f"✓ Filtering complete: Kept {len(kept_documents)}, Removed {len(removed_documents)}")
             
-            return filtered, removed, removal_reasons
+            return kept_documents, removed_documents, filter_reasons
             
         except Exception as e:
-            # Fallback: if LLM fails, keep all documents (safe default)
             self.logger.log(self.name, 
-                          f"⚠️ LLM filtering failed: {e}. KEEPING ALL DOCUMENTS as safety measure.", 
-                          "WARNING")
+                f"LLM filtering failed: {e}. Keeping all documents as fallback.", "ERROR")
+            
+            # Fallback: Keep all documents
             return documents, [], {}

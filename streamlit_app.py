@@ -8,7 +8,9 @@ import json
 import sys
 import os
 
+
 sys.path.insert(0, os.path.dirname(__file__))
+
 
 from agents import (
     FilterAgent, GroupingAgent, GroupReviewAgent,
@@ -16,12 +18,14 @@ from agents import (
     RelabelAgent, SuperiorAgent
 )
 
+
 st.set_page_config(
     page_title="Data Lableing Agent",
     page_icon="🏷️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
 
 # Enhanced CSS
 st.markdown("""
@@ -124,17 +128,20 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+
 def load_data(input_id: int) -> dict:
-    """Load data from JSON file"""
+    """Load data from JSON file - RETURNS FULL ITEM (with id, data, annotations)"""
     try:
         with open("input_data.json", 'r', encoding='utf-8') as f:
             data_list = json.load(f)
         for item in data_list:
             if item.get("id") == input_id:
+                # ✅ CRITICAL FIX: Return ENTIRE item (includes annotations)
                 return item
         raise ValueError(f"No data found with id={input_id}")
     except FileNotFoundError:
         raise FileNotFoundError("input_data.json not found")
+
 
 
 def display_query_location(query: str, location: str):
@@ -154,6 +161,7 @@ def display_query_location(query: str, location: str):
             📍 LOCATION: {location if location else 'Not Specified'}
         </div>
         """, unsafe_allow_html=True)
+
 
 
 def display_complete_workflow(output):
@@ -179,7 +187,7 @@ def display_complete_workflow(output):
             if "Filtering" in step_name:
                 st.markdown("### 🔍 Document Filtering")
                 col1, col2, col3 = st.columns(3)
-                col1.metric("Total Documents", details.get('total_docs', 0))
+                col1.metric("Total Documents", details.get('total_new_docs', 0))
                 col2.metric("✅ Kept", details.get('kept', 0))
                 col3.metric("🚫 Filtered", details.get('filtered', 0))
                 
@@ -270,6 +278,14 @@ def display_complete_workflow(output):
                 for col, label, emoji in zip(cols, labels, emojis):
                     col.metric(f"{emoji} {label.replace('_', ' ').title()}", labels_assigned.get(label, 0))
                 
+                # Show examples used
+                examples_used = details.get("examples_used", {})
+                if any(examples_used.values()):
+                    st.info(f"📚 Used {sum(examples_used.values())} reference examples: "
+                           f"RELEVANT: {examples_used.get('relevant', 0)}, "
+                           f"SOMEWHAT: {examples_used.get('somewhat_relevant', 0)}, "
+                           f"ACCEPTABLE: {examples_used.get('acceptable', 0)}")
+                
                 # Show which groups got which labels
                 groups_labeled = details.get("groups_labeled", [])
                 if groups_labeled:
@@ -344,6 +360,7 @@ def display_complete_workflow(output):
             st.markdown("---")
 
 
+
 def display_final_results(output):
     """Display final labeling results"""
     report = output.get("detailed_report", {})
@@ -352,6 +369,16 @@ def display_final_results(output):
     
     st.markdown("---")
     st.header("📋 Final Labeling Results")
+    
+    # Show statistics
+    stats = report.get("statistics", {})
+    if stats:
+        st.markdown("### 📊 Summary Statistics")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Total Docs", stats.get("total_documents", 0))
+        col2.metric("Already Labeled", stats.get("existing_labeled", 0))
+        col3.metric("New Processed", stats.get("new_documents_processed", 0))
+        col4.metric("Newly Labeled", stats.get("newly_labeled", 0))
     
     tabs = st.tabs(["✅ Relevant", "⚠️ Somewhat", "ℹ️ Acceptable", "❓ Not Sure", "🚫 Filtered"])
     
@@ -382,12 +409,13 @@ def display_final_results(output):
                 st.markdown(f"""
                 <div class='filtered-doc'>
                     <h4>{doc['title']}</h4>
-                    <p><b>ID:</b> <code>{doc['doc_id']}</code></p>
+                    <p><b>ID:</b> odede>{doc['doc_id']}</code></p>
                     <p><b>Reason:</b> {doc['reason']}</p>
                 </div>
                 """, unsafe_allow_html=True)
         else:
             st.info("No documents were filtered out")
+
 
 
 def main():
@@ -412,12 +440,12 @@ def main():
         
         st.info("""
         **Complete Workflow:**
-        1. 🔍 **Filtering**
-        2. 📦 **Grouping**
+        1. 🔍 **Filtering** (New Docs Only)
+        2. 📦 **Grouping** (By Topic + Year)
         3. 🔎 **Group Review**
         4. 🔄 **Regrouping** (if needed)
-        5. 🏷️ **Labeling** (group-based)
-        6. 🔎 **Label Review**
+        5. 🏷️ **Labeling** (Year-Based)
+        6. 🔎 **Label Review** (Max 10 RELEVANT)
         7. 🔄 **Relabeling** (if needed)
         8. ✅ **Final Results**
         """)
@@ -431,13 +459,16 @@ def main():
     if run_button:
         try:
             with st.spinner("📂 Loading data..."):
+                # ✅ Load FULL data item (includes id, data, annotations)
                 data = load_data(input_id)
             
             st.success(f"✓ Loaded dataset {input_id}")
             
-            # DISPLAY QUERY AND LOCATION PROMINENTLY
+            # Extract query and location for display
             query = data.get("data", {}).get("text", "")
             location = data.get("data", {}).get("location", "")
+            
+            # DISPLAY QUERY AND LOCATION PROMINENTLY
             display_query_location(query, location)
             
             with st.spinner("🤖 Initializing agents..."):
@@ -456,7 +487,8 @@ def main():
             st.success("✓ Agents initialized")
             
             with st.spinner("🔄 Processing documents..."):
-                output = superior_agent.process_documents(data.get("data", {}))
+                # ✅ CRITICAL FIX: Pass FULL data item (not just data["data"])
+                output = superior_agent.process_documents(data)
             
             # Display complete workflow
             display_complete_workflow(output)
@@ -494,6 +526,7 @@ def main():
     
     else:
         st.info("👈 Enter a dataset ID and click 'Run Labeling' to start")
+
 
 
 if __name__ == "__main__":
