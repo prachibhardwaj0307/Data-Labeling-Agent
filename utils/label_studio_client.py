@@ -1,172 +1,103 @@
 """
-Label Studio Client - Fetches documents from Label Studio API
+Label Studio API Client
 """
-import os
-from typing import Dict, Any, Optional
-from label_studio_sdk import LabelStudio
-
+import requests
+from typing import Optional, Dict
 
 class LabelStudioClient:
-    """
-    Client for interacting with Label Studio API
-    """
+    """Client to interact with Label Studio API"""
     
-    def __init__(self, api_key: str = None, base_url: str = None):
-        """
-        Initialize Label Studio client
-        
-        Args:
-            api_key: Label Studio API key (default from env var)
-            base_url: Label Studio instance URL (default: http://localhost:8080)
-        """
-        self.api_key = api_key or os.getenv("LABEL_STUDIO_API_KEY")
-        self.base_url = base_url or os.getenv("LABEL_STUDIO_URL", "http://localhost:8080")
-        
-        if not self.api_key:
-            raise ValueError(
-                "Label Studio API key not found. "
-                "Set LABEL_STUDIO_API_KEY environment variable or pass api_key parameter."
-            )
-        
-        # Initialize Label Studio client
-        self.client = LabelStudio(
-            api_key=self.api_key,
-            base_url=self.base_url
-        )
-        
-        print(f"✓ Label Studio client initialized (URL: {self.base_url})")
+    def __init__(self, base_url: str, api_key: str):
+        """Initialize Label Studio client"""
+        self.base_url = base_url.rstrip('/')
+        self.api_key = api_key
+        self.headers = {
+            "Authorization": f"Token {api_key}",
+            "Content-Type": "application/json"
+        }
     
-    def get_task(self, task_id: int) -> Dict[str, Any]:
-        """
-        Fetch a single task from Label Studio by ID
+    def get_task(self, task_id: int) -> Optional[Dict]:
+        """Fetch a task from Label Studio (only ground_truth annotation)"""
+        url = f"{self.base_url}/api/tasks/{task_id}"
         
-        Args:
-            task_id: Task ID in Label Studio
-            
-        Returns:
-            Task data dictionary in the format expected by your system
-        """
         try:
-            # Fetch task from Label Studio
-            task = self.client.tasks.get(id=task_id)
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
             
-            # Convert to dict if needed
-            if hasattr(task, 'dict'):
-                task_data = task.dict()
-            elif hasattr(task, 'to_dict'):
-                task_data = task.to_dict()
-            else:
-                task_data = task
+            raw_data = response.json()
+            transformed_data = self._transform_task_data(raw_data)
             
-            print(f"✓ Fetched task {task_id} from Label Studio")
+            return transformed_data
             
-            # Transform to your system's format
-            return self._transform_task_data(task_data, task_id)
-            
-        except Exception as e:
-            raise RuntimeError(f"Failed to fetch task {task_id} from Label Studio: {e}")
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Failed to fetch task {task_id}: {str(e)}")
     
-    def _transform_task_data(self, task_data: Dict[str, Any], task_id: int) -> Dict[str, Any]:
-        """
-        Transform Label Studio task data to your system's expected format
+    def _transform_task_data(self, raw_data: Dict) -> Dict:
+        """Transform Label Studio response (only ground_truth annotation)"""
         
-        Args:
-            task_data: Raw task data from Label Studio
-            task_id: Task ID
-            
-        Returns:
-            Transformed data in your system's format
-        """
-        # Extract the main data from Label Studio task
-        data = task_data.get("data", {})
-        annotations = task_data.get("annotations", [])
+        ground_truth_annotation = None
         
-        # Build the expected format
+        for annotation in raw_data.get("annotations", []):
+            if annotation.get("ground_truth", False):
+                ground_truth_annotation = annotation
+                break
+        
         transformed = {
-            "id": task_id,
-            "data": {
-                "items": data.get("items", []),
-                "text": data.get("text", ""),
-                "location": data.get("location", ""),
-                "organisation": data.get("organisation", ""),
-                "location_intent": data.get("location_intent", ""),
-                "recency_intent": data.get("recency_intent", "")
-            },
-            "annotations": annotations if annotations else [
-                {
-                    "result": [
-                        {
-                            "value": {
-                                "ranker": {
-                                    "relevant": [],
-                                    "somewhat_relevant": [],
-                                    "acceptable": [],
-                                    "irrelevant": [],
-                                    "not_sure": [],
-                                    "New Doc": [item.get("id") for item in data.get("items", [])]
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
+            "id": raw_data["id"],
+            "data": raw_data["data"],
+            "annotations": [ground_truth_annotation] if ground_truth_annotation else []
         }
         
         return transformed
     
-    def update_task_annotations(self, task_id: int, annotations: Dict[str, Any]) -> bool:
-        """
-        Update task annotations in Label Studio with labeling results
+    def update_task_annotation(self, task_id: int, annotation_id: int, 
+                               updated_ranker: Dict) -> bool:
+        """Update task annotation with new labels (PATCH)"""
+        url = f"{self.base_url}/api/tasks/{task_id}/annotations/{annotation_id}"
         
-        Args:
-            task_id: Task ID in Label Studio
-            annotations: Updated annotations/labels
-            
-        Returns:
-            True if successful
-        """
+        payload = {
+            "result": [
+                {
+                    "value": {
+                        "ranker": updated_ranker
+                    },
+                    "from_name": "rank",
+                    "to_name": "results",
+                    "type": "ranker"
+                }
+            ]
+        }
+        
         try:
-            # Update the task with new annotations
-            self.client.tasks.update(
-                id=task_id,
-                annotations=[{
-                    "result": [{
-                        "value": {
-                            "ranker": annotations
-                        }
-                    }]
-                }]
-            )
-            
-            print(f"✓ Updated annotations for task {task_id} in Label Studio")
+            response = requests.patch(url, headers=self.headers, json=payload)
+            response.raise_for_status()
             return True
             
-        except Exception as e:
-            print(f"❌ Failed to update task {task_id}: {e}")
-            return False
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Failed to update annotation: {str(e)}")
     
-    def get_project_tasks(self, project_id: int, limit: int = 100) -> list:
-        """
-        Fetch all tasks from a Label Studio project
+    def create_new_annotation(self, task_id: int, ranker: Dict, ground_truth: bool = False) -> Dict:
+        """Create a new annotation for a task (POST)"""
+        url = f"{self.base_url}/api/tasks/{task_id}/annotations/"
         
-        Args:
-            project_id: Project ID in Label Studio
-            limit: Maximum number of tasks to fetch
-            
-        Returns:
-            List of task IDs
-        """
+        payload = {
+            "result": [
+                {
+                    "value": {
+                        "ranker": ranker
+                    },
+                    "from_name": "rank",
+                    "to_name": "results",
+                    "type": "ranker"
+                }
+            ],
+            "ground_truth": ground_truth
+        }
+        
         try:
-            tasks = self.client.projects.list_tasks(
-                id=project_id,
-                page_size=limit
-            )
+            response = requests.post(url, headers=self.headers, json=payload)
+            response.raise_for_status()
+            return response.json()
             
-            task_ids = [task.id for task in tasks]
-            print(f"✓ Found {len(task_ids)} tasks in project {project_id}")
-            
-            return task_ids
-            
-        except Exception as e:
-            print(f"❌ Failed to fetch tasks from project {project_id}: {e}")
-            return []
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Failed to create annotation: {str(e)}")

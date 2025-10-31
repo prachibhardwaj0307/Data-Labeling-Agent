@@ -1,10 +1,10 @@
 """
 Superior Agent - Orchestrates workflow with learning from existing labels
-Processes ONLY "New Doc" documents, uses others as reference examples
+Processes ONLY "New Doc" documents, uses others as reference examples WITH FULL CONTENT
 """
 from typing import Dict, List, Any
 from models.data_models import Document, ProcessingStats
-from utils.helpers import Logger
+from utils.helpers import Logger, extract_text_from_html
 import config
 
 class SuperiorAgent:
@@ -101,7 +101,7 @@ class SuperiorAgent:
         self.stats.total_documents = len(all_documents)
         doc_map = {doc.id: doc for doc in all_documents}
         
-        # Learn from existing labels
+        # Learn from existing labels WITH FULL CONTENT
         self._learn_from_existing_labels(all_documents, existing_annotations)
         
         # Get ONLY "New Doc" documents
@@ -210,8 +210,8 @@ class SuperiorAgent:
                 
                 group_attempt += 1
         
-        # LABELING WITH YEAR-BASED PRIORITIZATION
-        self.logger.log(self.name, "\n🏷️ STEP 3: YEAR-BASED LABELING")
+        # LABELING WITH YEAR-BASED PRIORITIZATION AND RICH EXAMPLES
+        self.logger.log(self.name, "\n🏷️ STEP 3: LABELING WITH RICH EXAMPLES")
         
         labeling_results = self.labeling_agent.label_documents(
             groups, query, location, label_examples=self.label_examples
@@ -327,20 +327,26 @@ class SuperiorAgent:
     
     def _learn_from_existing_labels(self, documents: List[Document], 
                                     existing_annotations: Dict):
-        """Learn from existing labeled documents"""
+        """
+        Learn from existing labeled documents with FULL document details
+        Mark documents with their existing labels
+        """
         labeled_count = 0
         new_doc_count = 0
         
+        # Store examples with FULL document info for better context
         self.label_examples = {
             "relevant": [],
             "somewhat_relevant": [],
             "acceptable": []
         }
         
-        self.logger.log(self.name, f"Processing annotations: {list(existing_annotations.keys())}")
+        self.logger.log(self.name, f"Processing annotations with keys: {list(existing_annotations.keys())}")
         
+        # Create a map for quick lookup
         doc_map = {doc.id: doc for doc in documents}
         
+        # Process each label category
         for label_type, doc_ids in existing_annotations.items():
             self.logger.log(self.name, f"Processing '{label_type}': {len(doc_ids)} documents")
             
@@ -349,24 +355,37 @@ class SuperiorAgent:
                     doc = doc_map[doc_id]
                     doc.current_label = label_type
                     
+                    # Count based on label type
                     if label_type == "New Doc":
                         new_doc_count += 1
                     else:
                         labeled_count += 1
                     
+                    # Store FULL DOCUMENT DETAILS as examples (not just title)
                     if label_type in ["relevant", "somewhat_relevant", "acceptable"]:
+                        # Extract content preview
+                        content_preview = extract_text_from_html(doc.html)[:300]  # First 300 chars
+                        
                         self.label_examples[label_type].append({
                             "id": doc.id,
                             "title": doc.title,
-                            "label": label_type
+                            "content_preview": content_preview,  # ✅ Added full content
+                            "label": label_type,
+                            "html_snippet": doc.html[:200]  # First 200 chars of HTML
                         })
         
-        self.logger.log(self.name, f"📚 Learned from {labeled_count} existing labeled documents")
-        self.logger.log(self.name, f"📝 Examples breakdown:")
-        self.logger.log(self.name, f"   - RELEVANT: {len(self.label_examples['relevant'])}")
-        self.logger.log(self.name, f"   - SOMEWHAT_RELEVANT: {len(self.label_examples['somewhat_relevant'])}")
-        self.logger.log(self.name, f"   - ACCEPTABLE: {len(self.label_examples['acceptable'])}")
-        self.logger.log(self.name, f"   - NEW DOC (to be labeled): {new_doc_count}")
+        self.logger.log(self.name, 
+            f"📚 Learned from {labeled_count} existing labeled documents WITH FULL CONTENT")
+        self.logger.log(self.name, 
+            f"📝 Examples breakdown:")
+        self.logger.log(self.name, 
+            f"   - RELEVANT: {len(self.label_examples['relevant'])} (with content)")
+        self.logger.log(self.name, 
+            f"   - SOMEWHAT_RELEVANT: {len(self.label_examples['somewhat_relevant'])} (with content)")
+        self.logger.log(self.name, 
+            f"   - ACCEPTABLE: {len(self.label_examples['acceptable'])} (with content)")
+        self.logger.log(self.name, 
+            f"   - NEW DOC (to be labeled): {new_doc_count}")
     
     def _get_groups_with_labels(self, groups, labeling_results):
         """Map groups to labels"""
