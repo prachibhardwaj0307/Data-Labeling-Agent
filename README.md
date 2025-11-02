@@ -10,10 +10,11 @@ An intelligent document classification system using multiple AI agents to automa
 
 ### Prerequisites
 
-- Python 3.9 or higher  
-- OpenAI API key  
-- pip package manager  
-- Git for cloning repository  
+- Python 3.9 or higher
+- OpenAI API key
+- Label Studio URL and API key
+- pip package manager
+- Git for cloning repository
 
 ### Step 1: Clone Repository
 
@@ -42,17 +43,21 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Includes OpenAI, Anthropic, Streamlit, python-dotenv
+Includes OpenAI, Anthropic, Streamlit, python-dotenv, and requests.
 
 ### Step 4: Configure Environment
 
-- Create `.env` file in project root  
-- Add line:  
-  ```
-  OPENAI_API_KEY=sk-proj-your-api-key-here
-  ```
-- Replace with your actual OpenAI API key  
-- Ensure `.env` is in `.gitignore`
+- Create a `.env` file in the project root.
+- Add the following lines to the `.env` file:
+
+```
+OPENAI_API_KEY=sk-proj-your-api-key-here
+LABEL_STUDIO_URL=https://your-label-studio-instance.com
+LABEL_STUDIO_API_KEY=your-label-studio-api-key
+```
+
+- Replace with your actual OpenAI API key, Label Studio URL, and API key.
+- Ensure `.env` is in your `.gitignore` file to prevent committing secrets.
 
 ---
 
@@ -79,16 +84,25 @@ Includes OpenAI, Anthropic, Streamlit, python-dotenv
 
 ### Command Line Interface
 
+Run the agent on a specific task from Label Studio using the task ID:
+
 ```bash
-python3 main.py 1
-python3 main.py 2
+python3 main.py <task_id>
+```
+
+For example:
+
+```bash
+python3 main.py 35851
 ```
 
 Output saved as:
-- `output_id_X.json`
-- `report_id_X.json`
+- `output_id_<task_id>.json`
+- `report_id_<task_id>.json`
 
 ### Streamlit Web UI (Recommended)
+
+Launch the Streamlit application:
 
 ```bash
 streamlit run streamlit_app.py
@@ -96,17 +110,29 @@ streamlit run streamlit_app.py
 
 Then open your browser to [http://localhost:8501](http://localhost:8501)
 
-- Enter dataset ID in the input field  
-- Click **🚀 Run Labeling**  
-- View real-time workflow execution  
-- Download JSON reports when complete  
+- Enter the Label Studio **Task ID** in the sidebar input field.
+- Click **🚀 Run Labeling** to start the process.
+- View the real-time workflow execution and interim results.
+- Manually override any labels if necessary.
+- Save the final results back to Label Studio or download them as JSON files.
+
+---
+
+## 💡 Label Studio Integration
+
+This project is tightly integrated with Label Studio to streamline the data labeling workflow.
+
+- **Data Loading:** The application fetches tasks directly from Label Studio using the provided Task ID. This eliminates the need for local `input_data.json` files.
+- **Annotation:** The agent processes the documents and generates labels based on the defined categories.
+- **Example-Based Learning:** The system learns from existing annotations in Label Studio to improve the accuracy of its labeling. Documents already labeled as "relevant," "somewhat_relevant," and "acceptable" are used as reference examples.
+- **Saving Results:** The updated labels can be saved back to Label Studio, either by updating an existing annotation or creating a new one.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-document-labeling-system/
+data_labeling_agent/
 ├── agents/
 │   ├── __init__.py
 │   ├── filter_agent.py
@@ -118,9 +144,12 @@ document-labeling-system/
 │   ├── relabel_agent.py
 │   └── superior_agent.py
 ├── models/
+│   ├── __init__.py
 │   └── data_models.py
 ├── utils/
+│   ├── __init__.py
 │   ├── helpers.py
+│   ├── label_studio_client.py
 │   └── llm_client.py
 ├── config.py
 ├── main.py
@@ -135,85 +164,77 @@ document-labeling-system/
 ## 🏷️ Label Categories
 
 ### ✅ RELEVANT (Maximum 10)
-- Directly answers query  
-- Correct location match  
-- Current year (2025)  
-- Most comprehensive information  
-- Automatically limited to top 10  
+- Directly answers query
+- Correct location match
+- Current year (2025)
+- Most comprehensive information
+- Automatically limited to top 10
 
 ### ⚠️ SOMEWHAT_RELEVANT
-- Answers query but older (2024, 2023)  
-- Partially addresses query  
-- Correct location  
-- Still valuable but secondary  
+- Answers query but older (2024, 2023)
+- Partially addresses query
+- Correct location
+- Still valuable but secondary
 
 ### ℹ️ ACCEPTABLE
-- Correct topic but wrong location  
-- Provides context or background  
-- Example: US docs when user needs India  
+- Correct topic but wrong location
+- Provides context or background
+- Example: US docs when user needs India
 
 ### ❓ NOT_SURE
-- Missing or invalid title  
-- Unclear content  
-- Cannot determine relevance confidently  
+- Missing or invalid title
+- Unclear content
+- Cannot determine relevance confidently
 
 ### 🚫 IRRELEVANT
-- Completely unrelated to query  
-- Filtered out automatically  
-- No connection to topic  
+- Completely unrelated to query
+- Filtered out automatically
+- No connection to topic
 
 ---
 
 ## 🤖 AI Agents
 
+### SuperiorAgent
+- Orchestrates the entire workflow, from data loading and learning to final output generation.
+
 ### FilterAgent
-- Removes irrelevant documents with reasoning  
-- Uses LLM to analyze titles and content  
-- Conservative approach (keeps if uncertain)
+- Removes irrelevant documents with reasoning.
+- Uses LLM to analyze titles and content.
 
 ### GroupingAgent
-- Groups documents by topic **and year**  
-- Example: *Benefits 2025*, *Benefits 2024*
+- Groups documents by topic **and year**.
 
 ### GroupReviewAgent
-- Reviews grouping quality  
-- Checks names, themes, coherence  
-- Accepts single-document groups if justified  
+- Reviews grouping quality for coherence and correctness.
 
 ### RegroupAgent
-- Reorganizes groups based on feedback  
-- Improves group names and themes  
-
+- Reorganizes groups based on feedback from the review agent.
 
 ### LabelingAgent
-- Labels entire groups  
-- Year-aware: 2025 = RELEVANT, older = SOMEWHAT_RELEVANT  
-- Location-aware: wrong location = ACCEPTABLE  
+- Labels entire groups based on the defined criteria and learns from existing examples.
 
 ### LabelReviewAgent
-- Enforces maximum 10 RELEVANT documents rule  
-- Checks label accuracy and consistency  
-- Triggers relabeling if needed  
+- Enforces the "maximum 10 RELEVANT documents" rule and checks for label consistency.
 
 ### RelabelAgent
-- Selects **TOP 10** most relevant documents  
-- Ranks by: Year → Completeness → Quality → Location  
-- Downgrades excess to SOMEWHAT_RELEVANT  
+- Selects the **TOP 10** most relevant documents and downgrades others if necessary.
 
 ---
 
 ## 🔄 Workflow
 
 **Nine-Step Process:**
-1. Load documents from JSON file  
-2. FilterAgent removes irrelevant docs  
-3. GroupingAgent organizes by topic/year  
-4. GroupReviewAgent checks grouping  
-5. RegroupAgent reorganizes if rejected  
-6. LabelingAgent assigns labels  
-7. LabelReviewAgent validates labels  
-8. RelabelAgent ensures top 10 relevance  
-9. Generate output JSON reports  
+1.  Load task from Label Studio.
+2.  Learn from existing annotations to create reference examples.
+3.  FilterAgent removes irrelevant documents.
+4.  GroupingAgent organizes documents by topic and year.
+5.  GroupReviewAgent checks the grouping.
+6.  RegroupAgent reorganizes groups if necessary.
+7.  LabelingAgent assigns labels to the groups.
+8.  LabelReviewAgent validates the labels.
+9.  RelabelAgent ensures the top 10 relevance rule is met.
+10. Generate output and save results to Label Studio or download as JSON.
 
 ---
 
@@ -224,6 +245,7 @@ openai>=1.0.0
 anthropic>=0.20.0
 streamlit>=1.28.0
 python-dotenv>=1.0.0
+requests>=2.28.0
 ```
 
 ---
@@ -234,5 +256,5 @@ python-dotenv>=1.0.0
 
 ---
 
-⭐ **Star this repo if you find it helpful!**  
-🐛 **Report issues** on the Issues page  
+⭐ **Star this repo if you find it helpful!**
+🐛 **Report issues** on the Issues page

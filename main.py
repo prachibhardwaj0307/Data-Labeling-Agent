@@ -1,8 +1,10 @@
 """
-Main script to process documents
+Main script to process documents from Label Studio
 """
 import json
 import sys
+import os
+from dotenv import load_dotenv
 from agents.superior_agent import SuperiorAgent
 from agents.filter_agent import FilterAgent
 from agents.grouping_agent import GroupingAgent
@@ -11,27 +13,40 @@ from agents.labeling_agent import LabelingAgent
 from agents.label_review_agent import LabelReviewAgent
 from agents.regroup_agent import RegroupAgent
 from agents.relabel_agent import RelabelAgent
+from utils.label_studio_client import LabelStudioClient
 
-def main(dataset_id: int):
-    """Process documents for given dataset ID"""
+load_dotenv()
+
+def get_label_studio_client():
+    """Get Label Studio client from environment variables"""
+    base_url = os.getenv("LABEL_STUDIO_URL")
+    api_key = os.getenv("LABEL_STUDIO_API_KEY")
     
-    # Load input data
-    with open('input_data.json', 'r', encoding='utf-8') as f:
-        all_data = json.load(f)
+    if not base_url or not api_key:
+        raise ValueError("LABEL_STUDIO_URL and LABEL_STUDIO_API_KEY must be set in .env file")
     
-    # Find dataset by ID
-    dataset = None
-    for item in all_data:
-        if item.get("id") == dataset_id:
-            dataset = item
-            break
+    return LabelStudioClient(base_url, api_key)
+
+def load_data_from_api(task_id: int) -> dict:
+    """Load data from Label Studio API"""
+    try:
+        client = get_label_studio_client()
+        data = client.get_task(task_id)
+        return data
+    except Exception as e:
+        raise Exception(f"Failed to load task {task_id}: {str(e)}")
+
+def main(task_id: int):
+    """Process documents for a given Label Studio task ID"""
     
-    if not dataset:
-        print(f"❌ Dataset with ID {dataset_id} not found")
+    try:
+        print(f"📂 Loading task {task_id} from Label Studio...")
+        dataset = load_data_from_api(task_id)
+        print(f"✓ Loaded task {task_id} from Label Studio")
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
         return
-    
-    print(f"✓ Found dataset {dataset_id}")
-    
+
     # Initialize agents
     filter_agent = FilterAgent()
     grouping_agent = GroupingAgent()
@@ -52,19 +67,18 @@ def main(dataset_id: int):
     )
     
     # CRITICAL: Pass the ENTIRE dataset item (includes id, data, annotations)
-    # NOT just dataset["data"]
     result = superior_agent.process_documents(dataset)
     
     # Save results
-    output_file = f"output_id_{dataset_id}.json"
+    output_file = f"output_id_{task_id}.json"
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(result["updated_annotations"], f, indent=2)
     
-    report_file = f"report_id_{dataset_id}.json"
+    report_file = f"report_id_{task_id}.json"
     with open(report_file, 'w', encoding='utf-8') as f:
         json.dump(result["detailed_report"], f, indent=2)
     
-    workflow_file = f"workflow_id_{dataset_id}.json"
+    workflow_file = f"workflow_id_{task_id}.json"
     with open(workflow_file, 'w', encoding='utf-8') as f:
         json.dump(result["workflow_steps"], f, indent=2)
     
@@ -75,8 +89,9 @@ def main(dataset_id: int):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        dataset_id = int(sys.argv[1])
+        task_id = int(sys.argv[1])
     else:
-        dataset_id = 1
+        # Default task ID for testing
+        task_id = 35851
     
-    main(dataset_id)
+    main(task_id)

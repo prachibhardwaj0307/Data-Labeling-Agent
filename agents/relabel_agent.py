@@ -90,10 +90,54 @@ Be objective and justify your rankings clearly with emphasis on year and example
             self.logger.log(self.name, "Initiating TOP 10 selection with year prioritization...")
             
             return self._select_top_10_relevant(current_labels, query, location, relevant_docs)
+        elif review.rejected_docs:
+            self.logger.log(self.name, f"Relabeling {len(review.rejected_docs)} rejected documents based on feedback.")
+            return self._relabel_based_on_feedback(current_labels, review)
         else:
-            self.logger.log(self.name, "No overflow issue, returning current labels")
+            self.logger.log(self.name, "No overflow issue or rejected docs, returning current labels")
             return current_labels
-    
+
+    def _relabel_based_on_feedback(self, current_labels: Dict[str, List[LabelingDecision]],
+                                   review: LabelReviewDecision) -> Dict[str, List[LabelingDecision]]:
+        """Relabel documents based on specific feedback from the LabelReviewAgent."""
+        feedback = review.feedback.lower()
+        rejected_doc_ids = review.rejected_docs
+
+        new_label = "somewhat_relevant"  # Default relabel
+        reason_prefix = "[RELABELED based on feedback]"
+
+        if "location" in feedback:
+            new_label = "acceptable"
+            reason_prefix = "[RELABELED to acceptable due to location feedback]"
+        elif "topic" in feedback or "quality" in feedback:
+            new_label = "irrelevant"
+            reason_prefix = "[RELABELED to irrelevant due to topic/quality feedback]"
+        elif "year" in feedback:
+            new_label = "somewhat_relevant"
+            reason_prefix = "[RELABELED to somewhat_relevant due to year feedback]"
+
+        new_labels = {label: list(decisions) for label, decisions in current_labels.items()}
+
+        for doc_id in rejected_doc_ids:
+            for label_type, decisions in new_labels.items():
+                for i, decision in enumerate(decisions):
+                    if decision.doc_id == doc_id:
+                        original_decision = decisions.pop(i)
+                        new_decision = LabelingDecision(
+                            doc_id=original_decision.doc_id,
+                            label=new_label,
+                            reason=f"{reason_prefix} {original_decision.reason}",
+                            confidence="high",
+                            agent_name=self.name
+                        )
+                        if new_label not in new_labels:
+                            new_labels[new_label] = []
+                        new_labels[new_label].append(new_decision)
+                        self.logger.log(self.name, f"Relabeled {doc_id} from {label_type} to {new_label}")
+                        break
+
+        return new_labels
+
     def _select_top_10_relevant(self, current_labels: Dict[str, List[LabelingDecision]], 
                                query: str, location: str, 
                                relevant_docs: List[LabelingDecision]) -> Dict[str, List[LabelingDecision]]:

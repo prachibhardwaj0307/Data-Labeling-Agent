@@ -1,172 +1,113 @@
 """
-Grouping Agent - Groups documents by similarity AND year
+Grouping Agent - Groups documents by semantic similarity using sentence transformers and clustering.
 """
-from typing import List
+from typing import List, Dict
 import json
 import re
+import numpy as np
+from sentence_transformers import SentenceTransformer
+from sklearn.cluster import KMeans
 from models.data_models import Document, DocumentGroup
 from utils.helpers import Logger, extract_text_from_html
 from utils.llm_client import LLMClient
 
 class GroupingAgent:
     """
-    Agent responsible for grouping similar documents
-    Groups by topic AND year for recency-aware organization
+    Agent responsible for grouping similar documents based on semantic content.
     """
     
     def __init__(self):
         self.name = "GroupingAgent"
         self.logger = Logger()
         self.llm = LLMClient()
+        self.model = SentenceTransformer('all-MiniLM-L6-v2')
         
-        self.system_prompt = """You are a Document Grouping Agent specialized in clustering similar documents.
-
-**CRITICAL: GROUP BY TOPIC AND YEAR - SEPARATE GROUPS FOR DIFFERENT YEARS**
-
-Your role is to:
-1. Identify document topics and themes
-2. Extract year/date information from titles and content
-3. **CREATE SEPARATE GROUPS FOR EACH YEAR** within the same topic
-4. Prioritize recent documents (2024-2025)
-
-GROUPING STRATEGY:
-- Primary: Group by TOPIC (benefits, holidays, policies, etc.)
-- Secondary: **SEPARATE BY YEAR** within topics (THIS IS CRITICAL)
-- Example: If you have 5 "Benefits" documents:
-  - 3 from 2025 → "Employee Benefits 2025" (separate group)
-  - 2 from 2024 → "Employee Benefits 2024" (separate group)
-  - NOT: "Employee Benefits" (mixed years - WRONG)
-
-YEAR DETECTION:
-- Look for years in titles: "2025", "2024", "2023", etc.
-- Look for dates: "Jan 2025", "December 2024", etc.
-- If no year found, mark as "Undated" but try to infer from content
-
-GROUP NAMING CONVENTION (MANDATORY):
-- **ALWAYS use format: "[Topic] [Year]"**
-- Examples: "India Benefits 2025", "US Holidays 2024", "UK Policies 2023"
-- Never mix years in one group
-- If multiple years exist for a topic → Create multiple groups
-
-QUALITY REQUIREMENTS:
-- Groups can have 1-10 documents
-- Each group MUST have clear year identification in name
-- **DO NOT mix 2025 docs with 2024 docs**
-- Provide reasoning for year-based grouping
-
-This year-based grouping is CRITICAL for downstream labeling where 2025 = RELEVANT and older = SOMEWHAT_RELEVANT."""
+        self.system_prompt = """You are a Document Group Naming Agent. Your task is to analyze a group of documents and create a concise, descriptive name, theme, and reason for the group."""
 
     def group_documents(self, documents: List[Document], query: str) -> List[DocumentGroup]:
         """
-        Group documents by topic and year
+        Group documents by semantic similarity using sentence embeddings and clustering.
         """
-        self.logger.log(self.name, f"Grouping {len(documents)} documents by topic AND YEAR")
+        self.logger.log(self.name, f"Grouping {len(documents)} documents by semantic similarity.")
         
         if not documents:
             return []
-        
-        # Prepare document data with year extraction
-        docs_data = []
+
+        # Generate embeddings for document content
+        doc_contents = [doc.title + " " + extract_text_from_html(doc.html) for doc in documents]
+        embeddings = self.model.encode(doc_contents, convert_to_tensor=False)
+
+        # Determine the optimal number of clusters
+        num_docs = len(documents)
+        if num_docs < 3:
+            num_clusters = 1
+        else:
+            # Heuristic for determining the number of clusters
+            num_clusters = int(np.sqrt(num_docs)) + 1
+            if num_clusters < 2:
+                num_clusters = 2
+            if num_clusters > 10:
+                num_clusters = 10
+
+        # Perform KMeans clustering
+        kmeans = KMeans(n_clusters=num_clusters, random_state=42, n_init=10)
+        clusters = kmeans.fit_predict(embeddings)
+
+        # Create document groups based on clusters
+        doc_groups: Dict[int, List[Document]] = {i: [] for i in range(num_clusters)}
+        for i, doc in enumerate(documents):
+            doc_groups[clusters[i]].append(doc)
+
+        # Create DocumentGroup objects
+        groups = []
+        for cluster_id, docs_in_cluster in doc_groups.items():
+            if not docs_in_cluster:
+                continue
+
+            group_name, group_theme, group_reason = self._get_group_details(docs_in_cluster, query)
+            
+            group = DocumentGroup(
+                name=group_name,
+                documents=docs_in_cluster,
+                theme=group_theme,
+                reasons=[group_reason]
+            )
+            groups.append(group)
+            self.logger.log(self.name, f"Created group '{group.name}' with {len(docs_in_cluster)} docs.")
+
+        self.logger.log(self.name, f"Created {len(groups)} groups.")
+        return groups
+
+    def _get_group_details(self, documents: List[Document], query: str) -> (str, str, str):
+        """Generate a name, theme, and reason for a group of documents using an LLM."""
+        doc_previews = []
         for doc in documents:
-            content = extract_text_from_html(doc.html)[:500]
-            
-            # Extract year from title or content
-            year = self._extract_year(doc.title, content)
-            
-            docs_data.append({
-                "id": doc.id,
+            doc_previews.append({
                 "title": doc.title,
-                "content_preview": content,
-                "detected_year": year
+                "content_preview": extract_text_from_html(doc.html)[:200]
             })
-        
-        user_prompt = f"""GROUPING TASK WITH YEAR SEPARATION:
 
-Query: "{query}"
+        user_prompt = f"""Given the following documents and the original query, generate a concise and descriptive name, theme, and reason for the group.
 
-Documents to Group ({len(documents)} total):
-{json.dumps(docs_data, indent=2)}
+Original Query: "{query}"
 
-**CRITICAL INSTRUCTION: GROUP BY TOPIC AND YEAR**
+Documents:
+{json.dumps(doc_previews, indent=2)}
 
-For each document:
-1. Check "detected_year" field
-2. Identify the topic
-3. Create SEPARATE groups for EACH YEAR of the same topic
-
-Example: If you have "Benefits" docs from 2025, 2024, 2023:
-- Create 3 groups:
-  - "India Benefits 2025" (most recent)
-  - "India Benefits 2024" (previous year)
-  - "India Benefits 2023" (older)
-
-GROUP NAMING RULES:
-- Use format: "[Topic] [Year]"
-- Examples: "Employee Benefits 2025", "Holiday Calendar 2024", "Policies 2023"
-- For undated docs: "[Topic] (Undated)" or "[Topic] (Unknown Year)"
-- NEVER mix years in one group
-
-OUTPUT FORMAT (JSON):
+Respond in JSON format:
 {{
-    "groups": [
-        {{
-            "group_name": "Clear name with YEAR (e.g., 'India Benefits 2025')",
-            "theme": "Description including year/recency information",
-            "document_ids": ["doc_id1", "doc_id2"],
-            "year": "2025/2024/2023/Unknown",
-            "reasoning": "Why these docs grouped together, emphasizing year separation"
-        }}
-    ],
-    "grouping_strategy": "Explain your year-based grouping approach"
+    "group_name": "A concise name for the group (e.g., 'Indian Employee Handbooks 2025')",
+    "theme": "A one-sentence theme that summarizes the content of the group.",
+    "reason": "A brief explanation of why these documents are grouped together."
 }}
-
-REQUIREMENTS:
-- **Separate groups by year when possible**
-- Prioritize identifying recent (2024-2025) documents
-- Clear year labels in ALL group names
-- 1-10 documents per group"""
-
+"""
         try:
             response = self.llm.call_with_json_response(self.system_prompt, user_prompt)
-            
-            groups_data = response.get("groups", [])
-            groups = []
-            
-            doc_map = {doc.id: doc for doc in documents}
-            
-            for group_data in groups_data:
-                group_docs = []
-                for doc_id in group_data.get("document_ids", []):
-                    if doc_id in doc_map:
-                        group_docs.append(doc_map[doc_id])
-                
-                if group_docs:
-                    group = DocumentGroup(
-                        name=group_data.get("group_name", "Unnamed Group"),
-                        documents=group_docs,
-                        theme=group_data.get("theme", "No theme"),
-                        reasons=[group_data.get("reasoning", "No reasoning")]
-                    )
-                    groups.append(group)
-                    
-                    year = group_data.get("year", "Unknown")
-                    self.logger.log(self.name, 
-                        f"Created group '{group.name}' with {len(group_docs)} docs (Year: {year})")
-            
-            self.logger.log(self.name, f"Created {len(groups)} year-aware groups")
-            return groups
-            
+            return response.get("group_name", "Unnamed Group"), response.get("theme", "No theme provided"), response.get("reason", "No reason provided")
         except Exception as e:
-            self.logger.log(self.name, f"LLM grouping failed: {e}", "ERROR")
-            
-            # Fallback: Create single group
-            return [DocumentGroup(
-                name="All Documents",
-                documents=documents,
-                theme="Fallback grouping due to error",
-                reasons=["Grouped due to LLM error"]
-            )]
-    
+            self.logger.log(self.name, f"LLM group naming failed: {e}", "ERROR")
+            return "Unnamed Group", "Could not generate theme due to an error.", "Could not generate reason due to an error."
+
     def _extract_year(self, title: str, content: str) -> str:
         """Extract year from title or content"""
         text = f"{title} {content}"
