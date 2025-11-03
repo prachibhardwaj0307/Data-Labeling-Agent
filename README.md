@@ -20,7 +20,7 @@ An intelligent document classification system using multiple AI agents to automa
 
 ```bash
 git clone https://github.com/prachibhardwaj0307/Data-Labeling-Agent
-cd document-labeling-system
+cd Data-Labeling-System
 ```
 
 ### Step 2: Create Virtual Environment
