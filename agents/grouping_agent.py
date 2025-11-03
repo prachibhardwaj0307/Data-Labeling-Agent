@@ -1,7 +1,7 @@
 """
 Grouping Agent - Groups documents by semantic similarity using sentence transformers and clustering.
 """
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import json
 import re
 import numpy as np
@@ -78,7 +78,7 @@ class GroupingAgent:
         self.logger.log(self.name, f"Created {len(groups)} groups.")
         return groups
 
-    def _get_group_details(self, documents: List[Document], query: str) -> (str, str, str):
+    def _get_group_details(self, documents: List[Document], query: str) -> Tuple[str, str, str]:
         """Generate a name, theme, and reason for a group of documents using an LLM."""
         doc_previews = []
         for doc in documents:
